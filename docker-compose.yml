@@ -15,6 +15,7 @@ services:
        MYSQL_DATABASE: ${MYSQL_DATABASE}
        MYSQL_USER: ${MYSQL_LOGIN}
        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+       ZONE_IP: ${ZONE_IP}
   darkstart-server:
     container_name: darkstar-server
     build: darkstar-server
