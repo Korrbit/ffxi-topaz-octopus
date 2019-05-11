@@ -10,11 +10,11 @@ RUN apt-get update && \
   apt-get install -y g++-7 && \
   pip install supervisor && \
   pip install supervisor-stdout && \
-  git clone -b ${DS_BRANCH} http://github.com/DarkstarProject/darkstar.git/ /darkstar && \
+  git clone -b ${DS_BRANCH} http://github.com/Korrbit/darkstar.git/ /darkstar && \
   cd /darkstar && \
   sh autogen.sh && \
   ./configure --enable-debug=gdb && \
-  make -j4 && \
+  make -j6 && \
   apt-get autoremove -y build-essential git autoconf pkg-config software-properties-common && \
   rm -rf /var/lib/apt/lists/* && \
   rm -rf /darkstar/src && \

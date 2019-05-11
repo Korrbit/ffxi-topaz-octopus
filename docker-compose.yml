@@ -7,7 +7,7 @@ services:
      container_name: darkstar-db
      build: darkstar-db
      ports:
-     - "3306:3306"
+     - "23055:3306"
      volumes:
      - db_data:/var/lib/mysql
      environment:
