@@ -1,0 +1,29 @@
+from ubuntu:bionic
+
+
+RUN apt-get update && \
+  apt-get install -y  git python3 python3-pip python python-pip && \
+  pip3 install sqlalchemy && \
+  pip3 install pymysql && \
+  pip3 install beautifulsoup4 && \
+  pip3 install pyyaml && \
+  pip3 install six && \
+  pip install supervisor && \
+  pip install supervisor-stdout && \
+  git clone https://github.com/Korrbit/pydarkstar.git /darkstar && \
+  cd /darkstar && \
+  rm -rf /var/lib/apt/lists/*
+
+COPY etc/ etc/
+COPY docker-entrypoint.sh /usr/local/bin/
+
+# add darkstar user and fix permissions
+RUN groupadd -r darkstar && \
+  useradd -g darkstar -ms /bin/bash darkstar && \
+  chown -R darkstar:darkstar /darkstar && \
+  chmod a+x /usr/local/bin/docker-entrypoint.sh
+
+USER darkstar
+WORKDIR /darkstar
+
+CMD ["docker-entrypoint.sh"]

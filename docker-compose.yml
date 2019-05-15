@@ -16,6 +16,15 @@ services:
        MYSQL_USER: ${MYSQL_LOGIN}
        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
        ZONE_IP: ${ZONE_IP}
+  darkstar-ahbroker:
+     container_name: darkstar-ahbroker
+     build: darkstar-ahbroker
+     environment:
+       MYSQL_HOST: darkstar-db
+       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+       MYSQL_DATABASE: ${MYSQL_DATABASE}
+       MYSQL_USER: ${MYSQL_LOGIN}
+       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
   darkstart-server:
     container_name: darkstar-server
     build: darkstar-server
