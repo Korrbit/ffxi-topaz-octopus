@@ -10,6 +10,7 @@ Terraform is also added to help orchestrate the environments. (https://www.terra
 
 
 -- origional readme with a couple updates:
+
 two seperate services (server / db); utilizes docker volume to persist db data; supervisord for connect/game/search daemons; does not run as root.
 
 server is based off of ubuntu:bionic, db is based off mysql:5.5 (why 5.5? there are null constraint issues in 5.6).
