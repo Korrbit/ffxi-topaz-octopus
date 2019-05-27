@@ -2,3 +2,4 @@
 terraform.*
 lock.*
 terraform-*
+vars.tf
