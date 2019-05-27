@@ -30,6 +30,8 @@ ENABLE_VOIDWATCH=${ENABLE_VOIDWATCH:-0;}
 
 INITIAL_LEVEL_CAP=${INITIAL_LEVEL_CAP:-50;}
 MAX_LEVEL=${MAX_LEVEL:-75;}
+NORMAL_MOB_MAX_LEVEL_RANGE_MIN=${NORMAL_MOB_MAX_LEVEL_RANGE_MIN:81;}
+NORMAL_MOB_MAX_LEVEL_RANGE_MAX=${NORMAL_MOB_MAX_LEVEL_RANGE_MAX:84;}
 START_GIL=${START_GIL:-10;}
 START_INVENTORY=${START_INVENTORY:-30;}
 OPENING_CUTSCENE_ENABLE=${OPENING_CUTSCENE_ENABLE:-0;}
@@ -117,6 +119,8 @@ function modSettings() {
             sed -i "s/^\(ENABLE_VOIDWATCH[[:blank:]]*=\s*\).*\$/\1$ENABLE_VOIDWATCH/" /darkstar/scripts/globals/$f
             sed -i "s/^\(INITIAL_LEVEL_CAP[[:blank:]]*=\s*\).*\$/\1$INITIAL_LEVEL_CAP/" /darkstar/scripts/globals/$f
             sed -i "s/^\(MAX_LEVEL[[:blank:]]*=\s*\).*\$/\1$MAX_LEVEL/" /darkstar/scripts/globals/$f
+            sed -i "s/^\(NORMAL_MOB_MAX_LEVEL_RANGE_MIN[[:blank:]]*=\s*\).*\$/\1$NORMAL_MOB_MAX_LEVEL_RANGE_MIN/" /darkstar/scripts/globals/$f
+            sed -i "s/^\(NORMAL_MOB_MAX_LEVEL_RANGE_MAX[[:blank:]]*=\s*\).*\$/\1$NORMAL_MOB_MAX_LEVEL_RANGE_MAX/" /darkstar/scripts/globals/$f
             sed -i "s/^\(START_GIL[[:blank:]]*=\s*\).*\$/\1$START_GIL/" /darkstar/scripts/globals/$f
             sed -i "s/^\(START_INVENTORY[[:blank:]]*=\s*\).*\$/\1$START_INVENTORY/" /darkstar/scripts/globals/$f
             sed -i "s/^\(OPENING_CUTSCENE_ENABLE[[:blank:]]*=\s*\).*\$/\1$OPENING_CUTSCENE_ENABLE/" /darkstar/scripts/globals/$f
