@@ -8,8 +8,19 @@ The following changes were made to the origional fork, namely additions to pass 
 
 Terraform is also added to help orchestrate the environments. (https://www.terraform.io/) You will need to install the terraform client to run terraform init, terraform plan and terraform apply.
 
+* `terraform init` is required to setup the inital terraform-providers
+* `terraform plan` plan the orchestration
+* `terraform apply` apply plan (build and deploy environment)
 
--- origional readme with a couple updates:
+Please note that currently you will need to run apply twice. I need to impliment wait-for-it so that 
+the docker registry is up and ready before terraform attempts to run the dockerfile builds.
+
+Plan to add wait-for-it (https://github.com/vishnubob/wait-for-it) functionality to docker containers as well as terraform build scripts.
+
+
+origional readme with a couple updates:
+
+---
 
 two seperate services (server / db); utilizes docker volume to persist db data; supervisord for connect/game/search daemons; does not run as root.
 

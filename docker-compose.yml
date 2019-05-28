@@ -19,6 +19,8 @@ services:
   darkstar-ahbroker:
      container_name: darkstar-ahbroker
      build: darkstar-ahbroker
+      args:
+        MYSQL_DATABASE: darkstar-db
      environment:
        MYSQL_HOST: darkstar-db
        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -28,6 +30,9 @@ services:
   darkstart-server:
     container_name: darkstar-server
     build: darkstar-server
+      args:
+        FFXI_REPO: https://github.com/DarkstarProject/darkstar.git
+        MYSQL_DATABASE: darkstar-db
     environment:
       MYSQL_HOST: darkstar-db
       MYSQL_LOGIN: ${MYSQL_LOGIN}

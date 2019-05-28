@@ -19,17 +19,27 @@ resource "docker_container" "registry" {
     restart = "always"
 }
 
+# Need to include a wait-for-it type of approach not only for the docker containers docker-entrypoint.sh files
+# but also for terraform such that after the registry container is built, the docker-file builds will
+# successfully upload to the registry. Currently a terrform apply needs to be run twice.
+
+resource "null_resource" "wait-for-it" {
+    provisioner "local-exec" {
+        command = "chmod a+x wait-for-it.sh && ./wait-for-it.sh localhost:5000"
+    }
+}
+
 # here we are providing the commands to build the docker images that will be used, and push them
 # to the local repository
 resource "null_resource" "docker_file" {
     provisioner "local-exec" {
-      command = "cd darkstar-server && docker build -t darkstar-server:latest . && docker tag darkstar-server localhost:5000/darkstar-server && docker push localhost:5000/darkstar-server"
+      command = "cd darkstar-server && docker build --build-arg FFXI_REPO=${var.darkstar_git_repo} --build-arg MYSQL_DATABASE=${var.mysql_database}  -t darkstar-server:latest . && docker tag darkstar-server localhost:5000/darkstar-server && docker push localhost:5000/darkstar-server"
     }
 }
 
 resource "null_resource" "docker_file2" {
     provisioner "local-exec" {
-      command = "cd darkstar-db && docker build -t darkstar-db:latest . && docker tag darkstar-db localhost:5000/darkstar-db && docker push localhost:5000/darkstar-db"
+      command = "cd darkstar-db && docker build --build-arg MYSQL_DATABASE=${var.mysql_database} -t darkstar-db:latest . && docker tag darkstar-db localhost:5000/darkstar-db && docker push localhost:5000/darkstar-db"
     }
 }
 

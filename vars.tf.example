@@ -1,5 +1,10 @@
 ### Default Configuration ###
 
+variable "darkstar_git_repo" {
+  default = "https://github.com/DarkstarProject/darkstar.git"
+  description = "Select the repo to push down into the dockerfiles on build. Default value: https://github.com/DarkstarProject/darkstar.git"
+}
+
 variable "mysql_password" {
     default = "some_pass"
     description = "Password for MySQL Connection."
@@ -18,7 +23,6 @@ variable "mysql_database" {
 variable "mysql_login" {
   default = "darkstar"
 }
-
 
 variable "ffxi_servername" {
   default = "DarkStar"
