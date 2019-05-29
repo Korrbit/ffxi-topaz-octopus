@@ -22,15 +22,18 @@ origional readme with a couple updates:
 
 ---
 
-two seperate services (server / db); utilizes docker volume to persist db data; supervisord for connect/game/search daemons; does not run as root.
+seperate services (game, connect, search and db); utilizes docker volume to persist db data as well as build data;
 
-server is based off of ubuntu:bionic, db is based off mysql:5.5 (why 5.5? there are null constraint issues in 5.6).
+all instances are based off of ubuntu:bionic, db is based off mariadb:10.4.5-bionic;
 
 ---
 
 onbuild:
-- db container shallow clones darkstar (stable), copies SQL into seed directory; cleans up
-- server container installs dependencies; shallow clones darkstar (stable); compiles; cleans up
+- db container shallow clones darkstar (master), copies SQL into seed directory; cleans up
+- dsbuild container installs dependencies; clones darkstar (master); compiles; cleans up
+- dsconnect
+- dsgame
+- dssearch
 
 onstart:
 - db container copies seed data to target; prepends a `use` statement; injects a zone_ip update script
@@ -41,9 +44,12 @@ onstart:
 
 recommendations:
 
-- use linux native or within a bridged linux VM. native osx/native windows or docker-machine may give you unexpected results
-- optional: copy `.env.example` -> `.env`; modify to your needs, if you don't you'll see WARNINGS (but server should still work)
-- optional: use an external volume mount for the database volume (nfs/filesystem)
+if using docker-compose;
+- copy `.env.example` -> `.env`; modify to your needs, if you don't you'll see WARNINGS (but server should still work);
+- optional: use an external volume mount for the database volume (nfs/filesystem);
+
+If using terraform;
+- copy `vars.tf.example` -> `vars.tf`; modify to your needs, if you don't you'll see WARNINGS (but server should still work);
 
 instructions:
 
@@ -57,10 +63,10 @@ instructions:
 
 admin:
 
-* `docker-compose build` will force images to rebuild. to force a pull from darkstar `stable`, issue the build command with a `--no-cache` argument.
+* `docker-compose build` will force images to rebuild. to force a pull from darkstar `master`, issue the build command with a `--no-cache` argument.
 * `docker-compose restart` will ... restart
 * `docker-compose down -v` will nuke your database if you decide to forego the advice of using an external volume
-* connect to `0.0.0.0:23055` to with your (MySQL) database tool of choice. use the credentials defined in `.env`; or the default `darkstar:darkstar`
+* connect to `0.0.0.0:23055` to with your (MariaDB) database tool of choice. use the credentials defined in `.env`; or the default `darkstar:darkstar`
 
 ---
 
@@ -75,13 +81,11 @@ services are exposed on the (typical) ports:
 - `0.0.0.0:54231`
 - `0.0.0.0:54001`
 - `0.0.0.0:54002`
-- `0.0.0.0:23055` (MySQL DB)
+- `0.0.0.0:23055` (MariaDB)
 
 ---
 
 considerations:
 
-* moving login/map/search to separate containers. this all depends on the applications ability to resolve dns names. parameters like `login_data_ip` make me think otherwise.
 * integration / build testing
 * more runtime environment configuration
-* ??? submit a PR

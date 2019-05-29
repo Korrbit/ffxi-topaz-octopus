@@ -5,6 +5,16 @@ variable "darkstar_git_repo" {
   description = "Select the repo to push down into the dockerfiles on build. Default value: https://github.com/DarkstarProject/darkstar.git"
 }
 
+variable "ver_lock" {
+  default = "1"
+  description = "0 - disabled (every version allowed) 1 - enabled - strict (only exact CLIENT_VER allowed, default) 2 - enabled - greater than or equal  (matching or greater than CLIENT_VER allowed)"
+}
+
+variable "darkstar-db" {
+  default="darkstar-db"
+  description="darkstar db container name."
+}
+
 variable "mysql_password" {
     default = "some_pass"
     description = "Password for MySQL Connection."
