@@ -5,7 +5,7 @@ ENV DS_BRANCH=master
 ARG FFXI_REPO 
 ENV FFIX_REPO ${FFXI_REPO:-https://github.com/DarkstarProject/darkstar.git}
 ARG MYSQL_DATABASE
-ENV MYSQL_DATABASE ${MYSQL_DATABASE}:-darkstar-db}
+ENV MYSQL_DATABASE ${MYSQL_DATABASE:-darkstar-db}
 
 
 RUN apt-get update && \
@@ -41,4 +41,5 @@ USER darkstar
 EXPOSE 54230 54230/udp 54231 54001 54002
 WORKDIR /darkstar
 
-CMD ["wait-for-it.sh", "$MYSQL_DATABASE:3306", "--", "docker-entrypoint.sh"]
+#CMD ["wait-for-it.sh", "$MYSQL_DATABASE:3306", "--", "docker-entrypoint.sh"]
+CMD ./wait-for-it.sh ${MYSQL_DATABASE}:3306 --timeout=0 && ./dsconnect
