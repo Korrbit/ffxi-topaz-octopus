@@ -3,3 +3,4 @@ terraform.*
 lock.*
 terraform-*
 vars.tf
+darkstar-server/

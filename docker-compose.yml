@@ -1,38 +1,29 @@
-version: '2'
-# Persistent volume for the db
+version: '3'
+# Persistent volume for the db and build
 volumes:
   db_data:
+  build-volume:
 services:
   darkstar-db:
-     container_name: darkstar-db
-     build: darkstar-db
-     ports:
+    container_name: darkstar-db
+    build: darkstar-db
+    ports:
      - "23055:3306"
-     volumes:
+    volumes:
      - db_data:/var/lib/mysql
-     environment:
-       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-       MYSQL_DATABASE: ${MYSQL_DATABASE}
-       MYSQL_USER: ${MYSQL_LOGIN}
-       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-       ZONE_IP: ${ZONE_IP}
-  darkstar-ahbroker:
-     container_name: darkstar-ahbroker
-     build: darkstar-ahbroker
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_LOGIN}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      ZONE_IP: ${ZONE_IP}
+  darkstar-dsbuild:
+    container_name: darkstar-dsbuild
+    build:
+      context: darkstar-dsbuild
       args:
-        MYSQL_DATABASE: darkstar-db
-     environment:
-       MYSQL_HOST: darkstar-db
-       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-       MYSQL_DATABASE: ${MYSQL_DATABASE}
-       MYSQL_USER: ${MYSQL_LOGIN}
-       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-  darkstart-server:
-    container_name: darkstar-server
-    build: darkstar-server
-      args:
-        FFXI_REPO: https://github.com/DarkstarProject/darkstar.git
-        MYSQL_DATABASE: darkstar-db
+        FFXI_REPO: ${FFXI_REPO}
+        VER_LOCK: ${VER_LOCK}
     environment:
       MYSQL_HOST: darkstar-db
       MYSQL_LOGIN: ${MYSQL_LOGIN}
@@ -84,9 +75,60 @@ services:
       ENM_COOLDOWN: ${ENM_COOLDOWN}
       FORCE_SPAWN_QM_RESET_TIME: ${FORCE_SPAWN_QM_RESET_TIME}
       VISITANT_BONUS: ${VISITANT_BONUS}
+    volumes:
+      - build-volume:/usr/build
+  darkstar-dsconnect:
+    container_name: darkstar-dsconnect
+    build: 
+      context: darkstar-dsconnect
+      args:
+        MYSQL_DATABASE: darkstar-db      
+    depends_on:
+      - darkstar-db
+      - darkstar-dsbuild
     ports:
-    - "54230:54230"
-    - "54230:54230/udp"
-    - "54231:54231"
-    - "54001:54001"
-    - "54002:54002"
+      - "54001:54001"
+      - "54230:54230/tcp"
+      - "54231:54231"
+    volumes:
+      - build-volume:/usr/build
+    stdin_open: true
+    tty: true
+  darkstar-dsgame:
+    container_name: darkstar-dsgame
+    build: 
+      context: darkstar-dsgame
+      args:
+        MYSQL_DATABASE: darkstar-db     
+    depends_on:
+      - darkstar-db
+      - darkstar-dsbuild
+    ports:
+      - "54230:54230/udp"
+    volumes:
+      - build-volume:/usr/build
+  darkstar-dssearch:
+    container_name: darkstar-dssearch
+    build: 
+      context: darkstar-dssearch
+      args:
+        MYSQL_DATABASE: darkstar-db      
+    depends_on:
+       - darkstar-db
+       - darkstar-dsbuild
+    ports:
+       - "54002:54002"
+    volumes:
+       - build-volume:/usr/build
+  darkstar-ahbroker:
+    container_name: darkstar-ahbroker
+    build:
+      context: darkstar-ahbroker
+      args:
+        MYSQL_DATABASE: darkstar-db
+    environment:
+      MYSQL_HOST: darkstar-db
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_LOGIN}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}

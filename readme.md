@@ -11,26 +11,30 @@ Terraform is also added to help orchestrate the environments. (https://www.terra
 * `terraform init` is required to setup the inital terraform-providers
 * `terraform plan` plan the orchestration
 * `terraform apply` apply plan (build and deploy environment)
+* `terraform apply -auto-approve` apply plan (build and deploy environment) without approve prompt.
 
 Please note that currently you will need to run apply twice. I need to impliment wait-for-it so that 
 the docker registry is up and ready before terraform attempts to run the dockerfile builds.
 
-Plan to add wait-for-it (https://github.com/vishnubob/wait-for-it) functionality to docker containers as well as terraform build scripts.
+credit to wait-for-it (https://github.com/vishnubob/wait-for-it) - used for functionality added to docker containers as well as terraform build scripts.
 
 
 origional readme with a couple updates:
 
 ---
 
-two seperate services (server / db); utilizes docker volume to persist db data; supervisord for connect/game/search daemons; does not run as root.
+seperate services (game, connect, search and db); utilizes docker volume to persist db data as well as build data;
 
-server is based off of ubuntu:bionic, db is based off mysql:5.5 (why 5.5? there are null constraint issues in 5.6).
+all instances are based off of ubuntu:bionic, db is based off mariadb:10.4.5-bionic
 
 ---
 
 onbuild:
-- db container shallow clones darkstar (stable), copies SQL into seed directory; cleans up
-- server container installs dependencies; shallow clones darkstar (stable); compiles; cleans up
+- db container shallow clones darkstar (master), copies SQL into seed directory; cleans up
+- dsbuild container installs dependencies; clones darkstar (master); compiles; cleans up
+- dsconnect
+- dsgame
+- dssearch
 
 onstart:
 - db container copies seed data to target; prepends a `use` statement; injects a zone_ip update script
@@ -41,26 +45,44 @@ onstart:
 
 recommendations:
 
-- use linux native or within a bridged linux VM. native osx/native windows or docker-machine may give you unexpected results
-- optional: copy `.env.example` -> `.env`; modify to your needs, if you don't you'll see WARNINGS (but server should still work)
-- optional: use an external volume mount for the database volume (nfs/filesystem)
+if using docker-compose;
+- copy `.env.example` -> `.env`; modify to your needs, if you don't you'll see WARNINGS (but server should still work);
+- optional: use an external volume mount for the database volume (nfs/filesystem);
+
+If using terraform;
+- copy `vars.tf.example` -> `vars.tf`; modify to your needs, if you don't you'll see WARNINGS (but server should still work);
 
 instructions:
 
 * install latest docker CE (https://store.docker.com/search?type=edition&offering=community)
 * install latest docker-compose `$ pip install docker-compose`
-* clone repo `git clone <ffxi-darkstar-docker>`
+* clone repo `git clone https://github.com/Korrbit/ffxi-darkstar-docker.git`
 * cd into repo `cd ffxi-darkstar-docker`
-* start services `docker-compose up`
+
+If using docker-compose:
+* start services `docker-compose up -d` (-d will run services in the background where they belong!)
+
+If using terraform:
+* install latest terraform: https://www.terraform.io/downloads.html
+* `terraform init` is required to setup the inital terraform-providers
+* `terraform plan` plan the orchestration
+* `terraform apply` apply plan (build and deploy environment)
+* `terraform apply -auto-approve` apply plan (build and deploy environment) without approve prompt.
 
 ---
 
 admin:
 
-* `docker-compose build` will force images to rebuild. to force a pull from darkstar `stable`, issue the build command with a `--no-cache` argument.
+If using docker-compose:
+* `docker logs darkstar-dsgame` or similar command will get the current log from the container you are requesting.
+* `docker-compose build` will force images to rebuild. to force a pull from darkstar `master`, issue the build command with a `--no-cache` argument.
 * `docker-compose restart` will ... restart
 * `docker-compose down -v` will nuke your database if you decide to forego the advice of using an external volume
-* connect to `0.0.0.0:23055` to with your (MySQL) database tool of choice. use the credentials defined in `.env`; or the default `darkstar:darkstar`
+* connect to `0.0.0.0:23055` to with your (MariaDB) database tool of choice. use the credentials defined in `.env`; or the default `darkstar:darkstar`
+
+If using terraform:
+* `terraform destroy` will nuke the environment, including database if you decide to forego using an external volume
+* connect to `0.0.0.0:23055` to with your (MariaDB) database tool of choice. use the credentials defined in `.env`; or the default `darkstar:darkstar`
 
 ---
 
@@ -70,18 +92,17 @@ see darkstar doc/wiki for how to actually use the server: https://wiki.dspt.info
 
 services are exposed on the (typical) ports:
 
-- `0.0.0.0:54230`
-- `0.0.0.0:54230/udp`
-- `0.0.0.0:54231`
-- `0.0.0.0:54001`
-- `0.0.0.0:54002`
-- `0.0.0.0:23055` (MySQL DB)
+- `0.0.0.0:54230` (darkstar-dsgame, darkstar-dsconnect)
+- `0.0.0.0:54230/udp` (darkstar-dsgame)
+- `0.0.0.0:54231` (darkstar-dsconnect)
+- `0.0.0.0:54001` (darkstar-dsconnect)
+- `0.0.0.0:54002` (darkstar-dssearch)
+- `0.0.0.0:23055` (MariaDB)
+- `0.0.0.0:5000` (Docker registry)
 
 ---
 
 considerations:
 
-* moving login/map/search to separate containers. this all depends on the applications ability to resolve dns names. parameters like `login_data_ip` make me think otherwise.
 * integration / build testing
 * more runtime environment configuration
-* ??? submit a PR

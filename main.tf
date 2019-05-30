@@ -25,36 +25,66 @@ resource "docker_container" "registry" {
 
 resource "null_resource" "wait-for-it" {
     provisioner "local-exec" {
-        command = "chmod a+x wait-for-it.sh && ./wait-for-it.sh localhost:5000"
+        command = "chmod a+x wait-for-it.sh && ./wait-for-it.sh localhost:5000 --timeout=0"
     }
 }
 
 # here we are providing the commands to build the docker images that will be used, and push them
 # to the local repository
-resource "null_resource" "docker_file" {
+resource "null_resource" "darkstar-dsbuild" {
     provisioner "local-exec" {
-      command = "cd darkstar-server && docker build --build-arg FFXI_REPO=${var.darkstar_git_repo} --build-arg MYSQL_DATABASE=${var.mysql_database}  -t darkstar-server:latest . && docker tag darkstar-server localhost:5000/darkstar-server && docker push localhost:5000/darkstar-server"
+      command = "cd darkstar-dsbuild && docker build --build-arg FFXI_REPO=${var.darkstar_git_repo} --build-arg VER_LOCK=${var.ver_lock} -t darkstar-dsbuild:latest . && docker tag darkstar-dsbuild localhost:5000/darkstar-dsbuild && docker push localhost:5000/darkstar-dsbuild"
     }
 }
 
-resource "null_resource" "docker_file2" {
+resource "null_resource" "darkstar-db" {
     provisioner "local-exec" {
-      command = "cd darkstar-db && docker build --build-arg MYSQL_DATABASE=${var.mysql_database} -t darkstar-db:latest . && docker tag darkstar-db localhost:5000/darkstar-db && docker push localhost:5000/darkstar-db"
+      command = "cd darkstar-db && docker build --build-arg MYSQL_DATABASE=${var.darkstar-db} -t darkstar-db:latest . && docker tag darkstar-db localhost:5000/darkstar-db && docker push localhost:5000/darkstar-db"
     }
 }
 
-resource "null_resource" "docker_file3" {
+resource "null_resource" "darkstar-dsconnect" {
+  provisioner "local-exec" {
+      command = "cd darkstar-dsconnect && docker build --build-arg MYSQL_DATABASE=${var.darkstar-db} -t darkstar-dsconnect:latest . && docker tag darkstar-dsconnect localhost:5000/darkstar-dsconnect && docker push localhost:5000/darkstar-dsconnect"
+  }
+}
+
+resource "null_resource" "darkstar-dsgame" {
+  provisioner "local-exec" {
+      command = "cd darkstar-dsgame && docker build --build-arg MYSQL_DATABASE=${var.darkstar-db} -t darkstar-dsgame:latest . && docker tag darkstar-dsgame localhost:5000/darkstar-dsgame && docker push localhost:5000/darkstar-dsgame"
+  }
+}
+
+resource "null_resource" "darkstar-dssearch" {
+  provisioner "local-exec" {
+      command = "cd darkstar-dssearch && docker build --build-arg MYSQL_DATABASE=${var.darkstar-db} -t darkstar-dssearch:latest . && docker tag darkstar-dssearch localhost:5000/darkstar-dssearch && docker push localhost:5000/darkstar-dssearch"
+  }
+}
+
+resource "null_resource" "darkstar-ahbroker" {
     provisioner "local-exec" {
       command = "cd darkstar-ahbroker && docker build -t darkstar-ahbroker:latest . && docker tag darkstar-ahbroker localhost:5000/darkstar-ahbroker && docker push localhost:5000/darkstar-ahbroker"
     }
 }
 
-resource "docker_image" "darkstar-server" {
-  name = "localhost:5000/darkstar-server:latest"
-}
-
 resource "docker_image" "darkstar-db" {
   name = "localhost:5000/darkstar-db:latest"
+}
+
+resource "docker_image" "darkstar-dsbuild" {
+  name = "localhost:5000/darkstar-dsbuild:latest"
+}
+
+resource "docker_image" "darkstar-dsconnect" {
+  name = "localhost:5000/darkstar-dsconnect:latest"
+}
+
+resource "docker_image" "darkstar-dsgame" {
+  name = "localhost:5000/darkstar-dsgame:latest"
+}
+
+resource "docker_image" "darkstar-dssearch" {
+  name = "localhost:5000/darkstar-dssearch:latest"
 }
 
 resource "docker_image" "darkstar-ahbroker" {
@@ -66,6 +96,11 @@ resource "docker_volume" "db_data" {
   name = "db_data"
 }
 
+resource "docker_volume" "build-volume" {
+  name="build-volue"
+}
+
+
 # Create a new docker network
 resource "docker_network" "darkstar_network" {
   name = "ffxi_darkstar"
@@ -74,8 +109,8 @@ resource "docker_network" "darkstar_network" {
 # Create containers for db, ahbroker and server
 resource "docker_container" "darkstar-db" {
   image = "${docker_image.darkstar-db.latest}"
-  name  = "darkstar-db"
-  hostname = "darkstar-db"
+  name  = "${var.darkstar-db}"
+  hostname = "${var.darkstar-db}"
   volumes = {
       volume_name="${docker_volume.db_data.name}"
       container_path="/var/lib/mysql"
@@ -111,11 +146,15 @@ resource "docker_container" "darkstar-ahbroker" {
     network_mode="${docker_network.darkstar_network.name}"
 }
 
-resource "docker_container" "darkstar-server" {
+resource "docker_container" "darkstar-dsbuild" {
 
-  image = "${docker_image.darkstar-server.latest}"
-  name  = "darkstar-server"
-  hostname = "darkstar-server"
+  image = "${docker_image.darkstar-dsbuild.latest}"
+  name  = "darkstar-dsbuild"
+  hostname = "darkstar-dsbuild"
+    volumes = {
+      volume_name="${docker_volume.build-volume.name}"
+      container_path="/usr/build"
+  }
   env = [ 
       "MYSQL_HOST=${docker_container.darkstar-db.name}", 
       "MYSQL_LOGIN=${var.mysql_login}", 
@@ -170,24 +209,64 @@ resource "docker_container" "darkstar-server" {
       "FORCE_SPAWN_QM_RESET_TIME=${var.force_spawn_qm_reset_time}",
       "VISITANT_BONUS=${var.visitant_bonus}"
       ]
-  ports = [ 
+
+  network_mode="${docker_network.darkstar_network.name}"
+}
+
+resource "docker_container" "darkstar-dsconnect" {
+  image = "${docker_image.darkstar-dsconnect.latest}"
+  name = "darkstar-dsconnect"
+  hostname = "darkstar-dsconnect"
+  volumes = {
+      volume_name="${docker_volume.build-volume.name}"
+      container_path="/usr/build"
+  }
+  ports = [
       {
-        internal = 54230
-        external = 54230
+          internal = 54001
+          external = 54001
       },
+      {
+          internal = 54230
+          external = 54230
+      },
+      {
+          internal = 54231
+          external = 54231
+      }
+  ]
+  restart="always"
+  network_mode="${docker_network.darkstar_network.name}"
+}
+
+resource "docker_container" "darkstar-dsgame" {
+  image = "${docker_image.darkstar-dsgame.latest}"
+  name = "darkstar-dsgame"
+  hostname = "darkstar-dsgame"
+  volumes = {
+      volume_name="${docker_volume.build-volume.name}"
+      container_path="/usr/build"
+  }
+  ports = [
       {
         protocol = "udp"
         internal = 54230
         external = 54230
-      },
-      {
-        internal = 54231
-        external = 54231
-      }, 
-      {
-        internal = 54001
-        external = 54001
-      },
+      }
+  ]
+  restart="always"
+  network_mode="${docker_network.darkstar_network.name}"
+}
+
+resource "docker_container" "darkstar-dssearch" {
+  image = "${docker_image.darkstar-dssearch.latest}"
+  name = "darkstar-dssearch"
+  hostname = "darkstar-dssearch"
+  volumes = {
+      volume_name="${docker_volume.build-volume.name}"
+      container_path="/usr/build"
+  }
+  ports = [
       {
         internal = 54002
         external = 54002
