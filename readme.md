@@ -4,8 +4,6 @@ This is a fork of: https://github.com/notsureifkevin/ffxi-darkstar-docker
 
 dockerfied darkstar allows you to quickly setup and deploy a containerized ffxi server.
 
-The following changes were made to the origional fork, namely additions to pass environment variables that will change settings.lua. Docker-compose will still work, and will spin up 3 containers, one for darkstar, a second for the database, and a third for the auction house broker.
-
 Terraform is also added to help orchestrate the environments. (https://www.terraform.io/) You will need to install the terraform client to run terraform init, terraform plan and terraform apply.
 
 * `terraform init` is required to setup the inital terraform-providers
