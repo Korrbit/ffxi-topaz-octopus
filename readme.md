@@ -11,11 +11,12 @@ Terraform is also added to help orchestrate the environments. (https://www.terra
 * `terraform init` is required to setup the inital terraform-providers
 * `terraform plan` plan the orchestration
 * `terraform apply` apply plan (build and deploy environment)
+* `terraform apply -auto-approve` apply plan (build and deploy environment) without approve prompt.
 
 Please note that currently you will need to run apply twice. I need to impliment wait-for-it so that 
 the docker registry is up and ready before terraform attempts to run the dockerfile builds.
 
-Plan to add wait-for-it (https://github.com/vishnubob/wait-for-it) functionality to docker containers as well as terraform build scripts.
+credit to wait-for-it (https://github.com/vishnubob/wait-for-it) - used for functionality added to docker containers as well as terraform build scripts.
 
 
 origional readme with a couple updates:
@@ -24,7 +25,7 @@ origional readme with a couple updates:
 
 seperate services (game, connect, search and db); utilizes docker volume to persist db data as well as build data;
 
-all instances are based off of ubuntu:bionic, db is based off mariadb:10.4.5-bionic;
+all instances are based off of ubuntu:bionic, db is based off mariadb:10.4.5-bionic
 
 ---
 
@@ -55,17 +56,29 @@ instructions:
 
 * install latest docker CE (https://store.docker.com/search?type=edition&offering=community)
 * install latest docker-compose `$ pip install docker-compose`
-* clone repo `git clone <ffxi-darkstar-docker>`
+* clone repo `git clone https://github.com/Korrbit/ffxi-darkstar-docker.git`
 * cd into repo `cd ffxi-darkstar-docker`
+If using docker-compose:
 * start services `docker-compose up`
+If using terraform:
+* install latest terraform: https://www.terraform.io/downloads.html
+* `terraform init` is required to setup the inital terraform-providers
+* `terraform plan` plan the orchestration
+* `terraform apply` apply plan (build and deploy environment)
+* `terraform apply -auto-approve` apply plan (build and deploy environment) without approve prompt.
 
 ---
 
 admin:
 
+If using docker-compose:
 * `docker-compose build` will force images to rebuild. to force a pull from darkstar `master`, issue the build command with a `--no-cache` argument.
 * `docker-compose restart` will ... restart
 * `docker-compose down -v` will nuke your database if you decide to forego the advice of using an external volume
+* connect to `0.0.0.0:23055` to with your (MariaDB) database tool of choice. use the credentials defined in `.env`; or the default `darkstar:darkstar`
+
+If using terraform:
+* `terraform destroy` will nuke the environment, including database if you decide to forego using an external volume
 * connect to `0.0.0.0:23055` to with your (MariaDB) database tool of choice. use the credentials defined in `.env`; or the default `darkstar:darkstar`
 
 ---
@@ -76,12 +89,13 @@ see darkstar doc/wiki for how to actually use the server: https://wiki.dspt.info
 
 services are exposed on the (typical) ports:
 
-- `0.0.0.0:54230`
-- `0.0.0.0:54230/udp`
-- `0.0.0.0:54231`
-- `0.0.0.0:54001`
-- `0.0.0.0:54002`
+- `0.0.0.0:54230` (darkstar-dsgame, darkstar-dsconnect)
+- `0.0.0.0:54230/udp` (darkstar-dsgame)
+- `0.0.0.0:54231` (darkstar-dsconnect)
+- `0.0.0.0:54001` (darkstar-dsconnect)
+- `0.0.0.0:54002` (darkstar-dssearch)
 - `0.0.0.0:23055` (MariaDB)
+- `0.0.0.0:5000` (Docker registry)
 
 ---
 
