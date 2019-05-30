@@ -58,8 +58,10 @@ instructions:
 * install latest docker-compose `$ pip install docker-compose`
 * clone repo `git clone https://github.com/Korrbit/ffxi-darkstar-docker.git`
 * cd into repo `cd ffxi-darkstar-docker`
+
 If using docker-compose:
 * start services `docker-compose up`
+
 If using terraform:
 * install latest terraform: https://www.terraform.io/downloads.html
 * `terraform init` is required to setup the inital terraform-providers
