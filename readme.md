@@ -11,8 +11,6 @@ Terraform is also added to help orchestrate the environments. (https://www.terra
 * `terraform apply` apply plan (build and deploy environment)
 * `terraform apply -auto-approve` apply plan (build and deploy environment) without approve prompt.
 
-Please note that currently you will need to run apply twice. I need to impliment wait-for-it so that 
-the docker registry is up and ready before terraform attempts to run the dockerfile builds.
 
 credit to wait-for-it (https://github.com/vishnubob/wait-for-it) - used for functionality added to docker containers as well as terraform build scripts.
 
