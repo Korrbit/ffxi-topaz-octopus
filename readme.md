@@ -60,7 +60,7 @@ instructions:
 * cd into repo `cd ffxi-darkstar-docker`
 
 If using docker-compose:
-* start services `docker-compose up`
+* start services `docker-compose up -d` (-d will run services in the background where they belong!)
 
 If using terraform:
 * install latest terraform: https://www.terraform.io/downloads.html
@@ -74,6 +74,7 @@ If using terraform:
 admin:
 
 If using docker-compose:
+* `docker logs darkstar-dsgame` or similar command will get the current log from the container you are requesting.
 * `docker-compose build` will force images to rebuild. to force a pull from darkstar `master`, issue the build command with a `--no-cache` argument.
 * `docker-compose restart` will ... restart
 * `docker-compose down -v` will nuke your database if you decide to forego the advice of using an external volume
