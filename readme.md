@@ -57,7 +57,7 @@ instructions:
 
 * install latest docker CE (https://store.docker.com/search?type=edition&offering=community)
 * install latest docker-compose
-* clone repo `git clone https://github.com/Korrbit/ffxi-darkstar-docker.git`
+* clone repo `git clone https://github.com/Korrbit/ffxi-darkstar-octopus.git`
 * cd into repo `cd ffxi-darkstar-docker`
 
 If using docker-compose:
