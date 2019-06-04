@@ -1,6 +1,15 @@
-# ffxi-darkstar-docker
+# ffxi-darkstar-octopus
 
-This is a fork of: https://github.com/notsureifkevin/ffxi-darkstar-docker
+This is based off the following works:
+
+Dockerfiles:
+* https://github.com/DarkstarProject/darkstar/tree/docker
+* https://github.com/notsureifkevin/ffxi-darkstar-docker
+* https://github.com/crahda/dockstar
+
+Wait-for-it:
+* https://github.com/vishnubob/wait-for-it
+
 
 dockerfied darkstar allows you to quickly setup and deploy a containerized ffxi server.
 
@@ -10,9 +19,6 @@ Terraform is also added to help orchestrate the environments. (https://www.terra
 * `terraform plan` plan the orchestration
 * `terraform apply` apply plan (build and deploy environment)
 * `terraform apply -auto-approve` apply plan (build and deploy environment) without approve prompt.
-
-
-credit to wait-for-it (https://github.com/vishnubob/wait-for-it) - used for functionality added to docker containers as well as terraform build scripts.
 
 
 origional readme with a couple updates:
@@ -51,8 +57,8 @@ If using terraform;
 instructions:
 
 * install latest docker CE (https://store.docker.com/search?type=edition&offering=community)
-* install latest docker-compose `$ pip install docker-compose`
-* clone repo `git clone https://github.com/Korrbit/ffxi-darkstar-docker.git`
+* install latest docker-compose
+* clone repo `git clone https://github.com/Korrbit/ffxi-darkstar-octopus.git`
 * cd into repo `cd ffxi-darkstar-docker`
 
 If using docker-compose:
