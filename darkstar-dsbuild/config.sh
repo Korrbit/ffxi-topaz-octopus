@@ -6,7 +6,7 @@ MYSQL_LOGIN=${MYSQL_LOGIN:-darkstar}
 MYSQL_PASSWORD=${MYSQL_PASSWORD:-darkstar}
 MYSQL_DATABASE=${MYSQL_DATABASE:-dspdb}
 SERVERNAME=${SERVERNAME:-DarkStar}
-MSG_SERVER_IP=${MSG_SERVER_IP:-*}
+
 
 ## map_darkstar.conf Server Configuration
 skillup_chance_multiplier=${skillup_chance_multiplier:-2.5}
@@ -82,7 +82,6 @@ function modConfig() {
             sed -i "s/^\(mysql_login:\s*\).*\$/\1$MYSQL_LOGIN/" conf/$f
             sed -i "s/^\(mysql_password:\s*\).*\$/\1$MYSQL_PASSWORD/" conf/$f
             sed -i "s/^\(mysql_database:\s*\).*\$/\1$MYSQL_DATABASE/" conf/$f
-            sed -i "s/^\(msg_server_ip:\s*\).*\$/\1$MSG_SERVER_IP/" conf/$f
         fi
     done
 

@@ -118,6 +118,7 @@ services:
     depends_on:
       - darkstar-db
       - darkstar-dsbuild
+      - darkstar-dsconnect
     ports:
       - "54230:54230/udp"
     volumes:
