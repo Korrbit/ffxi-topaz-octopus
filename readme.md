@@ -5,6 +5,7 @@ This is based off the following works:
 Dockerfiles:
 * https://github.com/DarkstarProject/darkstar/tree/docker
 * https://github.com/notsureifkevin/ffxi-darkstar-docker
+* https://github.com/crahda/dockstar
 
 Wait-for-it:
 * https://github.com/vishnubob/wait-for-it

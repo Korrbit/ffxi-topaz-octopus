@@ -2,6 +2,8 @@ FROM ubuntu:bionic
 
 ARG FFXI_REPO 
 ENV FFIX_REPO ${FFXI_REPO:-https://github.com/DarkstarProject/darkstar.git}
+ARG FFXI_BRANCH
+ENV FFXI_BRANCH ${FFXI_BRANCH:-master}
 ARG VER_LOCK
 ENV VER_LOCK ${VER_LOCK:-1}
 
@@ -20,7 +22,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/build
-RUN git clone ${FFXI_REPO} .
+RUN git clone -b ${FFXI_BRANCH} ${FFXI_REPO} .
 RUN ./autogen.sh
 RUN ./configure
 RUN make -j4

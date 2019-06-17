@@ -5,9 +5,19 @@ variable "darkstar_git_repo" {
   description = "Select the repo to push down into the dockerfiles on build. Default value: https://github.com/DarkstarProject/darkstar.git"
 }
 
+variable "darkstar_branch" {
+  default="master"
+  description = "define which branch you wish to pull from."
+}
+
 variable "ver_lock" {
   default = "1"
   description = "0 - disabled (every version allowed) 1 - enabled - strict (only exact CLIENT_VER allowed, default) 2 - enabled - greater than or equal  (matching or greater than CLIENT_VER allowed)"
+}
+
+variable "db_volume" {
+  default = "./db"
+  description = "physical location where database files will be stored on local system."
 }
 
 variable "darkstar-db" {

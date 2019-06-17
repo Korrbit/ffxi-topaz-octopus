@@ -1,7 +1,19 @@
 version: '3'
-# Persistent volume for the db and build
+# Persistent volume for the db and build 
+#volumes:
+#  db-data:
+#    driver: local
+#    driver_opts:
+#      type: none
+#      device: ${DB_VOLUME}
+#      o: bind
+#  build-volume:
+#    driver: local
+#    driver_opts:
+#      type: none
+#      device: ${BUILD_VOLUME}
+#      o: bind
 volumes:
-  db_data:
   build-volume:
 services:
   darkstar-db:
@@ -10,7 +22,7 @@ services:
     ports:
      - "23055:3306"
     volumes:
-     - db_data:/var/lib/mysql
+     - ${DB_VOLUME}:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -23,6 +35,7 @@ services:
       context: darkstar-dsbuild
       args:
         FFXI_REPO: ${FFXI_REPO}
+        FFXI_BRANCH: ${FFXI_BRANCH}
         VER_LOCK: ${VER_LOCK}
     environment:
       MYSQL_HOST: darkstar-db
@@ -47,6 +60,8 @@ services:
       ENABLE_VOIDWATCH: ${ENABLE_VOIDWATCH}
       INITIAL_LEVEL_CAP: ${INITIAL_LEVEL_CAP}
       MAX_LEVEL: ${MAX_LEVEL}
+      NORMAL_MOB_MAX_LEVEL_RANGE_MIN: ${NORMAL_MOB_MAX_LEVEL_RANGE_MIN}
+      NORMAL_MOB_MAX_LEVEL_RANGE_MAX: ${NORMAL_MOB_MAX_LEVEL_RANGE_MAX}
       START_GIL: ${START_GIL}
       START_INVENTORY: ${START_INVENTORY}
       OPENING_CUTSCENE_ENABLE: ${OPENING_CUTSCENE_ENABLE}
@@ -103,6 +118,7 @@ services:
     depends_on:
       - darkstar-db
       - darkstar-dsbuild
+      - darkstar-dsconnect
     ports:
       - "54230:54230/udp"
     volumes:
