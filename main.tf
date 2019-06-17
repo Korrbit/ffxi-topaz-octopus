@@ -35,18 +35,21 @@ resource "null_resource" "darkstar-dsbuild" {
     provisioner "local-exec" {
       command = "cd darkstar-dsbuild && docker build --build-arg FFXI_REPO=${var.darkstar_git_repo} --build-arg FFXI_BRANCH=${var.darkstar_branch} --build-arg VER_LOCK=${var.ver_lock} -t darkstar-dsbuild:latest . && docker tag darkstar-dsbuild localhost:5000/darkstar-dsbuild && docker push localhost:5000/darkstar-dsbuild"
     }
+    depends_on = ["docker_container.registry"]
 }
 
 resource "null_resource" "darkstar-db" {
     provisioner "local-exec" {
       command = "cd darkstar-db && docker build --build-arg MYSQL_DATABASE=${var.darkstar-db} -t darkstar-db:latest . && docker tag darkstar-db localhost:5000/darkstar-db && docker push localhost:5000/darkstar-db"
     }
+    depends_on = ["docker_container.registry"]
 }
 
 resource "null_resource" "darkstar-dsconnect" {
   provisioner "local-exec" {
       command = "cd darkstar-dsconnect && docker build --build-arg MYSQL_DATABASE=${var.darkstar-db} -t darkstar-dsconnect:latest . && docker tag darkstar-dsconnect localhost:5000/darkstar-dsconnect && docker push localhost:5000/darkstar-dsconnect"
   }
+  depends_on = ["docker_container.registry"]
 }
 
 resource "null_resource" "darkstar-dsgame" {
@@ -59,12 +62,14 @@ resource "null_resource" "darkstar-dssearch" {
   provisioner "local-exec" {
       command = "cd darkstar-dssearch && docker build --build-arg MYSQL_DATABASE=${var.darkstar-db} -t darkstar-dssearch:latest . && docker tag darkstar-dssearch localhost:5000/darkstar-dssearch && docker push localhost:5000/darkstar-dssearch"
   }
+  depends_on = ["docker_container.registry"]
 }
 
 resource "null_resource" "darkstar-ahbroker" {
     provisioner "local-exec" {
       command = "cd darkstar-ahbroker && docker build -t darkstar-ahbroker:latest . && docker tag darkstar-ahbroker localhost:5000/darkstar-ahbroker && docker push localhost:5000/darkstar-ahbroker"
     }
+    depends_on = ["docker_container.registry"]
 }
 
 resource "docker_image" "darkstar-db" {
@@ -92,9 +97,9 @@ resource "docker_image" "darkstar-ahbroker" {
 }
 
 # Creates a docker volume "db_data".
-resource "docker_volume" "db_data" {
-  name = "db_data"
-}
+#resource "docker_volume" "db_data" {
+#  name = "db_data"
+#}
 
 resource "docker_volume" "build-volume" {
   name="build-volue"
@@ -112,7 +117,8 @@ resource "docker_container" "darkstar-db" {
   name  = "${var.darkstar-db}"
   hostname = "${var.darkstar-db}"
   volumes = {
-      volume_name="${docker_volume.db_data.name}"
+      host_path="${var.db_volume}"
+      #volume_name="${docker_volume.db_data.name}"
       container_path="/var/lib/mysql"
   }
   env = [
@@ -144,6 +150,7 @@ resource "docker_container" "darkstar-ahbroker" {
     ]
     restart="always"
     network_mode="${docker_network.darkstar_network.name}"
+    depends_on = ["docker_container.darkstar-db"]
 }
 
 resource "docker_container" "darkstar-dsbuild" {
@@ -256,6 +263,7 @@ resource "docker_container" "darkstar-dsgame" {
   ]
   restart="always"
   network_mode="${docker_network.darkstar_network.name}"
+  depends_on = ["docker_container.darkstar-dsconnect"]
 }
 
 resource "docker_container" "darkstar-dssearch" {
