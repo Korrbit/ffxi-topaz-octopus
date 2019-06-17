@@ -66,10 +66,10 @@ resource "null_resource" "darkstar-dssearch" {
 }
 
 resource "null_resource" "darkstar-ahbroker" {
-    provisioner "local-exec" {
-      command = "cd darkstar-ahbroker && docker build -t darkstar-ahbroker:latest . && docker tag darkstar-ahbroker localhost:5000/darkstar-ahbroker && docker push localhost:5000/darkstar-ahbroker"
-    }
-    depends_on = ["docker_container.registry"]
+  provisioner "local-exec" {
+    command = "cd darkstar-ahbroker && docker build -t darkstar-ahbroker:latest . && docker tag darkstar-ahbroker localhost:5000/darkstar-ahbroker && docker push localhost:5000/darkstar-ahbroker"
+  }
+  depends_on = ["docker_container.registry"]
 }
 
 resource "docker_image" "darkstar-db" {
@@ -218,6 +218,7 @@ resource "docker_container" "darkstar-dsbuild" {
       ]
 
   network_mode="${docker_network.darkstar_network.name}"
+  depends_on = ["null_resource.darkstar-dsbuild"]
 }
 
 resource "docker_container" "darkstar-dsconnect" {
@@ -244,6 +245,7 @@ resource "docker_container" "darkstar-dsconnect" {
   ]
   restart="always"
   network_mode="${docker_network.darkstar_network.name}"
+  depends_on = ["docker_container.darkstar-dsbuild", "null_resource.darkstar-dsconnect"]
 }
 
 resource "docker_container" "darkstar-dsgame" {
@@ -263,7 +265,7 @@ resource "docker_container" "darkstar-dsgame" {
   ]
   restart="always"
   network_mode="${docker_network.darkstar_network.name}"
-  depends_on = ["docker_container.darkstar-dsconnect"]
+  depends_on = ["docker_container.darkstar-dsconnect", "null_resource.darkstar-dsgame"]
 }
 
 resource "docker_container" "darkstar-dssearch" {
@@ -282,4 +284,5 @@ resource "docker_container" "darkstar-dssearch" {
   ]
   restart="always"
   network_mode="${docker_network.darkstar_network.name}"
+  depends_on = ["docker_container.darkstar-dsconnect", "null_resource.darkstar-dssearch"]
 }
