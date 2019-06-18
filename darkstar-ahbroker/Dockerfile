@@ -30,4 +30,4 @@ RUN groupadd -r darkstar && \
 USER darkstar
 WORKDIR /darkstar
 
-CMD ./wait-for-it.sh ${MYSQL_DATABASE}:3306 --timeout=0 && ./docker-entrypoint.sh
+CMD /usr/local/bin/wait-for-it.sh ${MYSQL_DATABASE}:3306 --timeout=0 && ./docker-entrypoint.sh
