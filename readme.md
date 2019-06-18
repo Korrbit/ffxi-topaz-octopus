@@ -83,7 +83,7 @@ If using docker-compose:
 * connect to `0.0.0.0:23055` to with your (MariaDB) database tool of choice. use the credentials defined in `.env`; or the default `darkstar:darkstar`
 
 If using terraform:
-* `terraform destroy` will nuke the environment, including database if you decide to forego using an external volume
+* `terraform destroy -auto-approve` will nuke the environment, including database if you decide to forego using an external volume
 * connect to `0.0.0.0:23055` to with your (MariaDB) database tool of choice. use the credentials defined in `.env`; or the default `darkstar:darkstar`
 
 ---
@@ -100,7 +100,7 @@ services are exposed on the (typical) ports:
 - `0.0.0.0:54001` (darkstar-dsconnect)
 - `0.0.0.0:54002` (darkstar-dssearch)
 - `0.0.0.0:23055` (MariaDB)
-- `0.0.0.0:5000` (Docker registry)
+- `0.0.0.0:5000` (Docker registry) --only if using Terraform
 
 ---
 
