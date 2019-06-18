@@ -1,7 +1,7 @@
 FROM ubuntu:bionic
 
-ARG MYSQL_DATABASE
-ENV MYSQL_DATABASE ${MYSQL_DATABASE}:-darkstar-db}
+ARG MYSQL_HOST
+ENV MYSQL_HOST ${MYSQL_HOST}:-darkstar-db}
 
 RUN apt-get update && \
   apt-get install -y  git python3 python3-pip python python-pip && \
@@ -30,4 +30,4 @@ RUN groupadd -r darkstar && \
 USER darkstar
 WORKDIR /darkstar
 
-CMD ./wait-for-it.sh ${MYSQL_DATABASE}:3306 --timeout=0 && ./docker-entrypoint.sh
+CMD /usr/local/bin/wait-for-it.sh ${MYSQL_HOST}:3306 --timeout=0 && /usr/local/bin/docker-entrypoint.sh

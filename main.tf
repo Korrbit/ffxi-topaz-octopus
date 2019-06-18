@@ -32,68 +32,99 @@ resource "null_resource" "wait-for-it" {
 # here we are providing the commands to build the docker images that will be used, and push them
 # to the local repository
 resource "null_resource" "darkstar-dsbuild" {
+    depends_on = ["docker_container.registry"]
     provisioner "local-exec" {
       command = "cd darkstar-dsbuild && docker build --build-arg FFXI_REPO=${var.darkstar_git_repo} --build-arg FFXI_BRANCH=${var.darkstar_branch} --build-arg VER_LOCK=${var.ver_lock} -t darkstar-dsbuild:latest . && docker tag darkstar-dsbuild localhost:5000/darkstar-dsbuild && docker push localhost:5000/darkstar-dsbuild"
     }
-    depends_on = ["docker_container.registry"]
 }
 
 resource "null_resource" "darkstar-db" {
+  depends_on = ["docker_container.registry"]
     provisioner "local-exec" {
       command = "cd darkstar-db && docker build --build-arg MYSQL_DATABASE=${var.darkstar-db} -t darkstar-db:latest . && docker tag darkstar-db localhost:5000/darkstar-db && docker push localhost:5000/darkstar-db"
     }
-    depends_on = ["docker_container.registry"]
 }
 
 resource "null_resource" "darkstar-dsconnect" {
+  depends_on = ["docker_container.registry"]
   provisioner "local-exec" {
       command = "cd darkstar-dsconnect && docker build --build-arg MYSQL_DATABASE=${var.darkstar-db} -t darkstar-dsconnect:latest . && docker tag darkstar-dsconnect localhost:5000/darkstar-dsconnect && docker push localhost:5000/darkstar-dsconnect"
   }
-  depends_on = ["docker_container.registry"]
 }
 
 resource "null_resource" "darkstar-dsgame" {
+  depends_on = ["docker_container.registry"]
   provisioner "local-exec" {
       command = "cd darkstar-dsgame && docker build --build-arg MYSQL_DATABASE=${var.darkstar-db} -t darkstar-dsgame:latest . && docker tag darkstar-dsgame localhost:5000/darkstar-dsgame && docker push localhost:5000/darkstar-dsgame"
   }
 }
 
 resource "null_resource" "darkstar-dssearch" {
+depends_on = ["docker_container.registry"]
   provisioner "local-exec" {
       command = "cd darkstar-dssearch && docker build --build-arg MYSQL_DATABASE=${var.darkstar-db} -t darkstar-dssearch:latest . && docker tag darkstar-dssearch localhost:5000/darkstar-dssearch && docker push localhost:5000/darkstar-dssearch"
   }
-  depends_on = ["docker_container.registry"]
 }
 
 resource "null_resource" "darkstar-ahbroker" {
-  provisioner "local-exec" {
-    command = "cd darkstar-ahbroker && docker build -t darkstar-ahbroker:latest . && docker tag darkstar-ahbroker localhost:5000/darkstar-ahbroker && docker push localhost:5000/darkstar-ahbroker"
-  }
   depends_on = ["docker_container.registry"]
+  provisioner "local-exec" {
+    command = "cd darkstar-ahbroker && docker build --build-arg MYSQL_HOST=${var.darkstar-db} -t darkstar-ahbroker:latest . && docker tag darkstar-ahbroker localhost:5000/darkstar-ahbroker && docker push localhost:5000/darkstar-ahbroker"
+  }
 }
 
 resource "docker_image" "darkstar-db" {
+  depends_on = ["null_resource.darkstar-db"]
   name = "localhost:5000/darkstar-db:latest"
+  provisioner "local-exec" {
+      when    = "destroy"
+      command = "docker rmi -f $(docker images -q darkstar-db)"
+    }
 }
 
 resource "docker_image" "darkstar-dsbuild" {
+  depends_on = ["null_resource.darkstar-dsbuild"]
   name = "localhost:5000/darkstar-dsbuild:latest"
+  provisioner "local-exec" {
+      when    = "destroy"
+      command = "docker rmi -f $(docker images -q darkstar-dsbuild)"
+    }
 }
 
 resource "docker_image" "darkstar-dsconnect" {
+  depends_on = ["null_resource.darkstar-dsconnect"]
   name = "localhost:5000/darkstar-dsconnect:latest"
+  provisioner "local-exec" {
+      when    = "destroy"
+      command = "docker rmi -f $(docker images -q darkstar-dsconnect)"
+    }
 }
 
 resource "docker_image" "darkstar-dsgame" {
+  depends_on = ["null_resource.darkstar-dsgame"]
   name = "localhost:5000/darkstar-dsgame:latest"
+  provisioner "local-exec" {
+      when    = "destroy"
+      command = "docker rmi -f $(docker images -q darkstar-dsgame)"
+    }
 }
 
 resource "docker_image" "darkstar-dssearch" {
+  depends_on = ["null_resource.darkstar-dssearch"]
   name = "localhost:5000/darkstar-dssearch:latest"
+  provisioner "local-exec" {
+      when    = "destroy"
+      command = "docker rmi -f $(docker images -q darkstar-dssearch)"
+    }
 }
 
 resource "docker_image" "darkstar-ahbroker" {
+  depends_on = ["null_resource.darkstar-ahbroker"]
   name = "localhost:5000/darkstar-ahbroker:latest"
+  provisioner "local-exec" {
+      when    = "destroy"
+      command = "docker rmi -f $(docker images -q darkstar-ahbroker)"
+    }
 }
 
 # Creates a docker volume "db_data".
@@ -113,6 +144,7 @@ resource "docker_network" "darkstar_network" {
 
 # Create containers for db, ahbroker and server
 resource "docker_container" "darkstar-db" {
+  depends_on = ["null_resource.darkstar-db"]
   image = "${docker_image.darkstar-db.latest}"
   name  = "${var.darkstar-db}"
   hostname = "${var.darkstar-db}"
@@ -138,23 +170,26 @@ resource "docker_container" "darkstar-db" {
 }
 
 resource "docker_container" "darkstar-ahbroker" {
-    image = "${docker_image.darkstar-ahbroker.latest}"
-    name = "darkstar-ahbroker"
-    hostname = "darkstar-ahbroker"
-    env = [
-      "MYSQL_HOST=${docker_container.darkstar-db.name}", 
-      "MYSQL_USER=${var.mysql_login}", 
-      "MYSQL_DATABASE=${var.mysql_database}", 
-      "MYSQL_PASSWORD=${var.mysql_password}",
-      "MYSQL_ROOT_PASSWORD=${var.mysql_root_password}"
-    ]
-    restart="always"
-    network_mode="${docker_network.darkstar_network.name}"
-    depends_on = ["docker_container.darkstar-db"]
+  depends_on = ["null_resource.darkstar-dsbuild", "docker_container.darkstar-db", "null_resource.darkstar-ahbroker"]
+  image = "${docker_image.darkstar-ahbroker.latest}"
+  name = "darkstar-ahbroker"
+  hostname = "darkstar-ahbroker"
+  env = [
+    "MYSQL_HOST=${docker_container.darkstar-db.name}", 
+    "MYSQL_USER=${var.mysql_login}", 
+    "MYSQL_DATABASE=${var.mysql_database}", 
+    "MYSQL_PASSWORD=${var.mysql_password}",
+    "MYSQL_ROOT_PASSWORD=${var.mysql_root_password}",
+    "AH_BOTNAME=${var.ah_botname}",
+    "AH_SINGLE=${var.ah_single}",
+    "AH_STACK=${var.ah_stack}"
+  ]
+  restart="always"
+  network_mode="${docker_network.darkstar_network.name}"
 }
 
 resource "docker_container" "darkstar-dsbuild" {
-
+  depends_on = ["null_resource.darkstar-dsbuild"]
   image = "${docker_image.darkstar-dsbuild.latest}"
   name  = "darkstar-dsbuild"
   hostname = "darkstar-dsbuild"
@@ -218,10 +253,10 @@ resource "docker_container" "darkstar-dsbuild" {
       ]
 
   network_mode="${docker_network.darkstar_network.name}"
-  depends_on = ["null_resource.darkstar-dsbuild"]
 }
 
 resource "docker_container" "darkstar-dsconnect" {
+  depends_on = ["null_resource.darkstar-dsbuild", "docker_container.darkstar-dsbuild", "null_resource.darkstar-dsconnect"]
   image = "${docker_image.darkstar-dsconnect.latest}"
   name = "darkstar-dsconnect"
   hostname = "darkstar-dsconnect"
@@ -245,10 +280,10 @@ resource "docker_container" "darkstar-dsconnect" {
   ]
   restart="always"
   network_mode="${docker_network.darkstar_network.name}"
-  depends_on = ["docker_container.darkstar-dsbuild", "null_resource.darkstar-dsconnect"]
 }
 
 resource "docker_container" "darkstar-dsgame" {
+  depends_on = ["null_resource.darkstar-dsbuild", "docker_container.darkstar-dsconnect", "null_resource.darkstar-dsgame"]
   image = "${docker_image.darkstar-dsgame.latest}"
   name = "darkstar-dsgame"
   hostname = "darkstar-dsgame"
@@ -265,10 +300,10 @@ resource "docker_container" "darkstar-dsgame" {
   ]
   restart="always"
   network_mode="${docker_network.darkstar_network.name}"
-  depends_on = ["docker_container.darkstar-dsconnect", "null_resource.darkstar-dsgame"]
 }
 
 resource "docker_container" "darkstar-dssearch" {
+  depends_on = ["null_resource.darkstar-dsbuild", "docker_container.darkstar-dsconnect", "null_resource.darkstar-dssearch"]
   image = "${docker_image.darkstar-dssearch.latest}"
   name = "darkstar-dssearch"
   hostname = "darkstar-dssearch"
@@ -284,5 +319,4 @@ resource "docker_container" "darkstar-dssearch" {
   ]
   restart="always"
   network_mode="${docker_network.darkstar_network.name}"
-  depends_on = ["docker_container.darkstar-dsconnect", "null_resource.darkstar-dssearch"]
 }
