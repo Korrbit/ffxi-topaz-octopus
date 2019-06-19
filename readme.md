@@ -39,6 +39,7 @@ onbuild:
 - dssearch
 
 onstart:
+- dsconnect will update config file to provide the right ip address for msg server
 - db container copies seed data to target; prepends a `use` statement; injects a zone_ip update script
 - db container will run seed data if db defined as `$MYSQL_DATABASE` does not exist
 - app server uses `sed` to inject environment configuration parameters
@@ -46,6 +47,8 @@ onstart:
 ---
 
 recommendations:
+
+Most configuraiton options are configurable via .env or .vars files.
 
 if using docker-compose;
 - copy `.env.example` -> `.env`; modify to your needs, if you don't you'll see WARNINGS (but server should still work);
@@ -59,7 +62,7 @@ instructions:
 * install latest docker CE (https://store.docker.com/search?type=edition&offering=community)
 * install latest docker-compose
 * clone repo `git clone https://github.com/Korrbit/ffxi-darkstar-octopus.git`
-* cd into repo `cd ffxi-darkstar-docker`
+* cd into repo `cd ffxi-darkstar-octopus`
 
 If using docker-compose:
 * start services `docker-compose up -d` (-d will run services in the background where they belong!)
@@ -83,7 +86,7 @@ If using docker-compose:
 * connect to `0.0.0.0:23055` to with your (MariaDB) database tool of choice. use the credentials defined in `.env`; or the default `darkstar:darkstar`
 
 If using terraform:
-* `terraform destroy` will nuke the environment, including database if you decide to forego using an external volume
+* `terraform destroy -auto-approve` will nuke the environment, including database if you decide to forego using an external volume
 * connect to `0.0.0.0:23055` to with your (MariaDB) database tool of choice. use the credentials defined in `.env`; or the default `darkstar:darkstar`
 
 ---
@@ -100,7 +103,7 @@ services are exposed on the (typical) ports:
 - `0.0.0.0:54001` (darkstar-dsconnect)
 - `0.0.0.0:54002` (darkstar-dssearch)
 - `0.0.0.0:23055` (MariaDB)
-- `0.0.0.0:5000` (Docker registry)
+- `0.0.0.0:5000` (Docker registry) --only if using Terraform
 
 ---
 
