@@ -142,6 +142,8 @@ services:
       context: darkstar-ahbroker
       args:
         MYSQL_HOST: darkstar-db
+        GITHUB_REPO: ${GITHUB_REPO_AHBROKER}
+        GITHUB_BRANCH: ${GITHUB_BRANCH_AHBROKER}
     environment:
       MYSQL_HOST: darkstar-db
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}

@@ -69,7 +69,7 @@ depends_on = ["docker_container.registry"]
 resource "null_resource" "darkstar-ahbroker" {
   depends_on = ["docker_container.registry"]
   provisioner "local-exec" {
-    command = "cd darkstar-ahbroker && docker build --build-arg MYSQL_HOST=${var.darkstar-db} -t darkstar-ahbroker:latest . && docker tag darkstar-ahbroker localhost:5000/darkstar-ahbroker && docker push localhost:5000/darkstar-ahbroker"
+    command = "cd darkstar-ahbroker && docker build --build-arg MYSQL_HOST=${var.darkstar-db} --build-arg GITHUB_REPO=${var.github_repo_ahbroker} --build-arg GITHUB_BRANCH=${var.github_branch_ahbroker} -t darkstar-ahbroker:latest . && docker tag darkstar-ahbroker localhost:5000/darkstar-ahbroker && docker push localhost:5000/darkstar-ahbroker"
   }
 }
 
