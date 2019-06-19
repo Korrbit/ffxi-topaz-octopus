@@ -141,10 +141,13 @@ services:
     build:
       context: darkstar-ahbroker
       args:
-        MYSQL_DATABASE: darkstar-db
+        MYSQL_HOST: darkstar-db
     environment:
       MYSQL_HOST: darkstar-db
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_LOGIN}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      AH_BOTNAME: ${ah_botname}
+      AH_SINGLE: ${ah_single}
+      AH_STACK: ${ah_stack}

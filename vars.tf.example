@@ -16,8 +16,8 @@ variable "ver_lock" {
 }
 
 variable "db_volume" {
-  default = "./db"
-  description = "physical location where database files will be stored on local system."
+  default = "/somepath/db"
+  description = "unlike docker-compose, must be absolute path. physical location where database files will be stored on local system."
 }
 
 variable "darkstar-db" {
@@ -55,6 +55,25 @@ variable "ffxi_zoneip" {
 }
 
 ### Default Configuration ###
+
+### AH BROKER ###
+
+variable "ah_botname" {
+  default = "Zissou"
+  description = "Name of the buyer and seller for AH Broker"
+}
+
+variable "ah_single" {
+  default = 5
+  description = "How many to stock for singles"
+}
+
+variable "ah_stack" {
+  default = 5
+  description = "How many to stock for stacks"
+}
+
+### AH BROKER ###
 
 ### map_darkstar Server Configuration ###
 
