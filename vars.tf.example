@@ -16,7 +16,7 @@ variable "ver_lock" {
 }
 
 variable "db_volume" {
-  default = "/somepath/db"
+  default = "/opt/db"
   description = "unlike docker-compose, must be absolute path. physical location where database files will be stored on local system."
 }
 
@@ -57,6 +57,16 @@ variable "ffxi_zoneip" {
 ### Default Configuration ###
 
 ### AH BROKER ###
+
+variable "github_repo_ahbroker" {
+  default="https://github.com/Korrbit/pydarkstar.git"
+  description="github repo for ahbroker."
+}
+
+variable "github_branch_ahbroker" {
+  default="master"
+  description="which branch to pull."
+}
 
 variable "ah_botname" {
   default = "Zissou"

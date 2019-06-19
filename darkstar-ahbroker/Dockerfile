@@ -1,18 +1,17 @@
 FROM ubuntu:bionic
 
 ARG MYSQL_HOST
-ENV MYSQL_HOST ${MYSQL_HOST}:-darkstar-db}
+ENV MYSQL_HOST ${MYSQL_HOST:-darkstar-db}
+ARG GITHUB_REPO
+ENV GITHUB_REPO ${GITHUB_REPO:-https://github.com/AdamGagorik/pydarkstar.git}
+ARG GITHUB_BRANCH
+ENV GITHUB_BRANCH ${GITHUB_BRANCH:-master}
 
 RUN apt-get update && \
   apt-get install -y  git python3 python3-pip python python-pip && \
-  pip3 install sqlalchemy && \
-  pip3 install pymysql && \
-  pip3 install beautifulsoup4 && \
-  pip3 install pyyaml && \
-  pip3 install six && \
-  pip install supervisor && \
-  pip install supervisor-stdout && \
-  git clone https://github.com/Korrbit/pydarkstar.git /darkstar && \
+  pip3 install sqlalchemy pymysql beautifulsoup4 pyyaml six && \
+  pip install supervisor supervisor-stdout && \
+  git clone -b ${GITHUB_BRANCH} ${GITHUB_REPO} /darkstar && \
   cd /darkstar && \
   rm -rf /var/lib/apt/lists/*
 
