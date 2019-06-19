@@ -39,6 +39,7 @@ onbuild:
 - dssearch
 
 onstart:
+- dsconnect will update config file to provide the right ip address for msg server
 - db container copies seed data to target; prepends a `use` statement; injects a zone_ip update script
 - db container will run seed data if db defined as `$MYSQL_DATABASE` does not exist
 - app server uses `sed` to inject environment configuration parameters
@@ -46,6 +47,8 @@ onstart:
 ---
 
 recommendations:
+
+Most configuraiton options are configurable via .env or .vars files.
 
 if using docker-compose;
 - copy `.env.example` -> `.env`; modify to your needs, if you don't you'll see WARNINGS (but server should still work);
@@ -59,7 +62,7 @@ instructions:
 * install latest docker CE (https://store.docker.com/search?type=edition&offering=community)
 * install latest docker-compose
 * clone repo `git clone https://github.com/Korrbit/ffxi-darkstar-octopus.git`
-* cd into repo `cd ffxi-darkstar-docker`
+* cd into repo `cd ffxi-darkstar-octopus`
 
 If using docker-compose:
 * start services `docker-compose up -d` (-d will run services in the background where they belong!)
