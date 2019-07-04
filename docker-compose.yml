@@ -18,7 +18,10 @@ volumes:
 services:
   darkstar-db:
     container_name: darkstar-db
-    build: darkstar-db
+    build: 
+      context: darkstar-db
+      FFXI_REPO: ${FFXI_REPO}
+      FFXI_BRANCH: ${FFXI_BRANCH}
     ports:
      - "23055:3306"
     volumes:
@@ -42,6 +45,7 @@ services:
       MYSQL_LOGIN: ${MYSQL_LOGIN}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      ZONE_IP: ${ZONE_IP}
       SERVERNAME: ${SERVERNAME}
       skillup_chance_multiplier: ${skillup_chance_multiplier}
       craft_chance_multiplier: ${craft_chance_multiplier}

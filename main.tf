@@ -41,7 +41,7 @@ resource "null_resource" "darkstar-dsbuild" {
 resource "null_resource" "darkstar-db" {
   depends_on = ["docker_container.registry"]
     provisioner "local-exec" {
-      command = "cd darkstar-db && docker build --build-arg MYSQL_DATABASE=${var.darkstar-db} -t darkstar-db:latest . && docker tag darkstar-db localhost:5000/darkstar-db && docker push localhost:5000/darkstar-db"
+      command = "cd darkstar-db && docker build --build-arg FFXI_REPO=${var.darkstar_git_repo} --build-arg FFXI_BRANCH=${var.darkstar_branch} --build-arg MYSQL_DATABASE=${var.darkstar-db} -t darkstar-db:latest . && docker tag darkstar-db localhost:5000/darkstar-db && docker push localhost:5000/darkstar-db"
     }
 }
 
@@ -199,9 +199,10 @@ resource "docker_container" "darkstar-dsbuild" {
   }
   env = [ 
       "MYSQL_HOST=${docker_container.darkstar-db.name}", 
-      "MYSQL_LOGIN=${var.mysql_login}", 
-      "MYSQL_DATABASE=${var.mysql_database}", 
-      "MYSQL_PASSWORD=${var.mysql_password}", 
+      "MYSQL_LOGIN=${var.mysql_login}",
+      "MYSQL_DATABASE=${var.mysql_database}",
+      "MYSQL_PASSWORD=${var.mysql_password}",
+      "ZONE_IP=${var.ffxi_zoneip}",
       "SERVERNAME=${var.ffxi_servername}",
       "skillup_chance_multiplier=${var.skillup_chance_multiplier}",
       "craft_chance_multiplier=${var.craft_chance_multiplier}",

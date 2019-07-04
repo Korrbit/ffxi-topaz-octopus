@@ -15,20 +15,22 @@ ARG DEPS="\
                 g++-7\
                 libmariadbclient-dev\
                 libluajit-5.1-dev\
-                libzmq3-dev"
+                libzmq3-dev\
+                mysql-client"
 
 RUN apt-get update && \
     apt-get install -y $DEPS && \
     rm -rf /var/lib/apt/lists/*
 
-WORKDIR /usr/build
+WORKDIR /opt/build
 RUN git clone -b ${FFXI_BRANCH} ${FFXI_REPO} .
 RUN ./autogen.sh
 RUN ./configure
-RUN make -j4
+RUN make -j6
 COPY . .
 RUN sed -i "s/^\(VER_LOCK:\s*\).*\$/\1${VER_LOCK}/" version.info && \
     chmod a+x config.sh && \
-    chmod a+x wait-for-it.sh
+    chmod a+x wait-for-it.sh && \
+    chmod a+x update_db.sh
 
-CMD ./config.sh
+CMD ./config.sh && ./wait-for-it.sh ${MYSQL_HOST}:3306 --timeout=0 && ./update_db.sh
