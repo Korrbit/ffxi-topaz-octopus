@@ -41,7 +41,7 @@ resource "null_resource" "darkstar-dsbuild" {
 resource "null_resource" "darkstar-db" {
   depends_on = ["docker_container.registry"]
     provisioner "local-exec" {
-      command = "cd darkstar-db && docker build --build-arg MYSQL_DATABASE=${var.darkstar-db} -t darkstar-db:latest . && docker tag darkstar-db localhost:5000/darkstar-db && docker push localhost:5000/darkstar-db"
+      command = "cd darkstar-db && docker build --build-arg FFXI_REPO=${var.darkstar_git_repo} --build-arg FFXI_BRANCH=${var.darkstar_branch} --build-arg MYSQL_DATABASE=${var.darkstar-db} -t darkstar-db:latest . && docker tag darkstar-db localhost:5000/darkstar-db && docker push localhost:5000/darkstar-db"
     }
 }
 
@@ -132,9 +132,9 @@ resource "docker_image" "darkstar-ahbroker" {
 #  name = "db_data"
 #}
 
-resource "docker_volume" "build-volume" {
-  name="build-volue"
-}
+#resource "docker_volume" "build-volume" {
+#  name="build-volue"
+#}
 
 
 # Create a new docker network
@@ -194,14 +194,16 @@ resource "docker_container" "darkstar-dsbuild" {
   name  = "darkstar-dsbuild"
   hostname = "darkstar-dsbuild"
     volumes = {
-      volume_name="${docker_volume.build-volume.name}"
+      host_path="${var.build_volume}"
+      #volume_name="${docker_volume.build-volume.name}"
       container_path="/usr/build"
   }
   env = [ 
       "MYSQL_HOST=${docker_container.darkstar-db.name}", 
-      "MYSQL_LOGIN=${var.mysql_login}", 
-      "MYSQL_DATABASE=${var.mysql_database}", 
-      "MYSQL_PASSWORD=${var.mysql_password}", 
+      "MYSQL_LOGIN=${var.mysql_login}",
+      "MYSQL_DATABASE=${var.mysql_database}",
+      "MYSQL_PASSWORD=${var.mysql_password}",
+      "ZONE_IP=${var.ffxi_zoneip}",
       "SERVERNAME=${var.ffxi_servername}",
       "skillup_chance_multiplier=${var.skillup_chance_multiplier}",
       "craft_chance_multiplier=${var.craft_chance_multiplier}",
@@ -261,7 +263,8 @@ resource "docker_container" "darkstar-dsconnect" {
   name = "darkstar-dsconnect"
   hostname = "darkstar-dsconnect"
   volumes = {
-      volume_name="${docker_volume.build-volume.name}"
+      host_path="${var.build_volume}"
+      #volume_name="${docker_volume.build-volume.name}"
       container_path="/usr/build"
   }
   ports = [
@@ -288,7 +291,8 @@ resource "docker_container" "darkstar-dsgame" {
   name = "darkstar-dsgame"
   hostname = "darkstar-dsgame"
   volumes = {
-      volume_name="${docker_volume.build-volume.name}"
+      host_path="${var.build_volume}"
+      #volume_name="${docker_volume.build-volume.name}"
       container_path="/usr/build"
   }
   ports = [
@@ -308,7 +312,8 @@ resource "docker_container" "darkstar-dssearch" {
   name = "darkstar-dssearch"
   hostname = "darkstar-dssearch"
   volumes = {
-      volume_name="${docker_volume.build-volume.name}"
+      host_path="${var.build_volume}"
+      #volume_name="${docker_volume.build-volume.name}"
       container_path="/usr/build"
   }
   ports = [

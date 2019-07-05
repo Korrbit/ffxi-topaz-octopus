@@ -20,6 +20,11 @@ variable "db_volume" {
   description = "unlike docker-compose, must be absolute path. physical location where database files will be stored on local system."
 }
 
+variable "build_volume" {
+  default = "/home/korrbit/development/ffxi-darkstar-octopus/build"
+  description = "unlike docker-compose, must be absolute path. physical location where build files will be stored on local system."
+}
+
 variable "darkstar-db" {
   default="darkstar-db"
   description="darkstar db container name."
