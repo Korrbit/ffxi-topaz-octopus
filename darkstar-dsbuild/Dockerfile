@@ -23,6 +23,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/build
+RUN rm -rf *
 RUN git clone -b ${FFXI_BRANCH} ${FFXI_REPO} .
 RUN ./autogen.sh
 RUN ./configure

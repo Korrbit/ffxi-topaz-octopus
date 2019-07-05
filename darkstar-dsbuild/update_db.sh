@@ -7,11 +7,19 @@ MYSQL_PASSWORD=${MYSQL_PASSWORD:-darkstar}
 MYSQL_DATABASE=${MYSQL_DATABASE:-dspdb}
 MYSQL_HOST=${MYSQL_HOST:-darkstar-db}
 
+yes | cp -rf . /usr/build
+rm -rf /usr/build/src
+rm /usr/build/*.o
+rm /usr/build/*.dll
+rm -rf /usr/build/cmake
+rm /usr/build/cmake*
+rm /usr/build/make*
+
 if [[ -d /opt/build/sql ]]; then
     cd /opt/build/sql
     for f in *.sql
     do
-        if [[ $f =~ ^char* ]] || [[ $f =~ ^account* ]]; then
+        if [[ $f =~ ^char* ]] || [[ $f =~ ^account* ]] || [[ $f =~ ^auction_house* ]] || [[ $f =~ ^delivery_box* ]]; then
             if [[ $(mysql -h${MYSQL_HOST} -u${MYSQL_USER} -p${MYSQL_PASSWORD} ${MYSQL_DATABASE} -sse "select count(*) from ${f%????};") -gt 0 ]]; then
                 echo "${f%????} is not empty."
             else

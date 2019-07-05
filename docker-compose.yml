@@ -13,8 +13,8 @@ version: '3'
 #      type: none
 #      device: ${BUILD_VOLUME}
 #      o: bind
-volumes:
-  build-volume:
+#volumes:
+  #build-volume:
 services:
   darkstar-db:
     container_name: darkstar-db
@@ -95,7 +95,7 @@ services:
       FORCE_SPAWN_QM_RESET_TIME: ${FORCE_SPAWN_QM_RESET_TIME}
       VISITANT_BONUS: ${VISITANT_BONUS}
     volumes:
-      - build-volume:/usr/build
+      - ${BUILD_VOLUME}:/usr/build
   darkstar-dsconnect:
     container_name: darkstar-dsconnect
     build: 
@@ -110,7 +110,7 @@ services:
       - "54230:54230/tcp"
       - "54231:54231"
     volumes:
-      - build-volume:/usr/build
+      - ${BUILD_VOLUME}:/usr/build
     stdin_open: true
     tty: true
   darkstar-dsgame:
@@ -126,7 +126,7 @@ services:
     ports:
       - "54230:54230/udp"
     volumes:
-      - build-volume:/usr/build
+      - ${BUILD_VOLUME}:/usr/build
   darkstar-dssearch:
     container_name: darkstar-dssearch
     build: 
@@ -139,7 +139,7 @@ services:
     ports:
        - "54002:54002"
     volumes:
-       - build-volume:/usr/build
+       - ${BUILD_VOLUME}:/usr/build
   darkstar-ahbroker:
     container_name: darkstar-ahbroker
     build:

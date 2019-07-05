@@ -132,9 +132,9 @@ resource "docker_image" "darkstar-ahbroker" {
 #  name = "db_data"
 #}
 
-resource "docker_volume" "build-volume" {
-  name="build-volue"
-}
+#resource "docker_volume" "build-volume" {
+#  name="build-volue"
+#}
 
 
 # Create a new docker network
@@ -194,7 +194,8 @@ resource "docker_container" "darkstar-dsbuild" {
   name  = "darkstar-dsbuild"
   hostname = "darkstar-dsbuild"
     volumes = {
-      volume_name="${docker_volume.build-volume.name}"
+      host_path="${var.build_volume}"
+      #volume_name="${docker_volume.build-volume.name}"
       container_path="/usr/build"
   }
   env = [ 
@@ -262,7 +263,8 @@ resource "docker_container" "darkstar-dsconnect" {
   name = "darkstar-dsconnect"
   hostname = "darkstar-dsconnect"
   volumes = {
-      volume_name="${docker_volume.build-volume.name}"
+      host_path="${var.build_volume}"
+      #volume_name="${docker_volume.build-volume.name}"
       container_path="/usr/build"
   }
   ports = [
@@ -289,7 +291,8 @@ resource "docker_container" "darkstar-dsgame" {
   name = "darkstar-dsgame"
   hostname = "darkstar-dsgame"
   volumes = {
-      volume_name="${docker_volume.build-volume.name}"
+      host_path="${var.build_volume}"
+      #volume_name="${docker_volume.build-volume.name}"
       container_path="/usr/build"
   }
   ports = [
@@ -309,7 +312,8 @@ resource "docker_container" "darkstar-dssearch" {
   name = "darkstar-dssearch"
   hostname = "darkstar-dssearch"
   volumes = {
-      volume_name="${docker_volume.build-volume.name}"
+      host_path="${var.build_volume}"
+      #volume_name="${docker_volume.build-volume.name}"
       container_path="/usr/build"
   }
   ports = [
