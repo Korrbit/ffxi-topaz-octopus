@@ -20,8 +20,9 @@ services:
     container_name: darkstar-db
     build: 
       context: darkstar-db
-      FFXI_REPO: ${FFXI_REPO}
-      FFXI_BRANCH: ${FFXI_BRANCH}
+      args:
+        FFXI_REPO: ${FFXI_REPO}
+        FFXI_BRANCH: ${FFXI_BRANCH}
     ports:
      - "23055:3306"
     volumes:
