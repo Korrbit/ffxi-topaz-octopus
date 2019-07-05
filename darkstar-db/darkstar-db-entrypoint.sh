@@ -10,7 +10,7 @@ if [[ -d /docker-entrypoint-initdb.d/.seed ]]; then
     cd /docker-entrypoint-initdb.d/.seed
     for f in *.sql
     do
-        echo "USE ${MYSQL_DATABASE};" | cat - $f >> /docker-entrypoint-initdb.d/$f    
+        echo "USE ${MYSQL_DATABASE};" | cat - $f >> /docker-entrypoint-initdb.d/10-$f    
     done
 fi
 
