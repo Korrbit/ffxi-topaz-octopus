@@ -9,6 +9,25 @@ SERVERNAME=${SERVERNAME:-DarkStar}
 
 
 ## map_darkstar.conf Server Configuration
+lightluggage_block=${lightluggage_block:-4}
+ah_base_fee_single=${ah_base_fee_single:-1}
+ah_base_fee_stacks=${ah_base_fee_stacks:-4}
+ah_tax_rate_single=${ah_tax_rate_single:-1.0}
+ah_tax_rate_stacks=${ah_tax_rate_stacks:-0.5}
+ah_max_fee=${ah_max_fee:-10000}
+exp_rate=${exp_rate:-1.0}
+exp_loss_rate=${exp_loss_rate:-1.0}
+exp_party_gap_penalties=${exp_party_gap_penalties:-1}
+fov_allow_alliance=${fov_allow_alliance:-1}
+vanadiel_time_offset=${vanadiel_time_offset:-0}
+fame_multiplier=${fame_multiplier:-1.00}
+exp_retain=${exp_retain:-0}
+exp_loss_level=${exp_loss_level:-4}
+level_sync_enable=${level_sync_enable:-1}
+disable_gear_scaling=${disable_gear_scaling:-0}
+all_jobs_widescan=${all_jobs_widescan:-0}
+speed_mod=${speed_mod:-0}
+mob_speed_mod=${mob_speed_mod:-0}
 skillup_chance_multiplier=${skillup_chance_multiplier:-2.5}
 craft_chance_multiplier=${craft_chance_multiplier:-2.6}
 player_hp_multiplier=${player_hp_multiplier:-1.0}
@@ -95,6 +114,25 @@ function modSettings() {
     for f in ${conf_file[@]}
     do
         if [[ -f conf/$f ]]; then
+            sed -i "s/^\(lightluggage_block:\s*\).*\$/\1$lightluggage_block/" conf/$f
+            sed -i "s/^\(ah_base_fee_single:\s*\).*\$/\1$ah_base_fee_single/" conf/$f
+            sed -i "s/^\(ah_base_fee_stacks:\s*\).*\$/\1$ah_base_fee_stacks/" conf/$f
+            sed -i "s/^\(ah_tax_rate_single:\s*\).*\$/\1$ah_tax_rate_single/" conf/$f
+            sed -i "s/^\(ah_tax_rate_stacks:\s*\).*\$/\1$ah_tax_rate_stacks/" conf/$f
+            sed -i "s/^\(ah_max_fee:\s*\).*\$/\1$ah_max_fee/" conf/$f
+            sed -i "s/^\(exp_rate:\s*\).*\$/\1$exp_rate/" conf/$f
+            sed -i "s/^\(exp_loss_rate:\s*\).*\$/\1$exp_loss_rate/" conf/$f
+            sed -i "s/^\(exp_party_gap_penalties:\s*\).*\$/\1$exp_party_gap_penalties/" conf/$f
+            sed -i "s/^\(fov_allow_alliance:\s*\).*\$/\1$fov_allow_alliance/" conf/$f
+            sed -i "s/^\(vanadiel_time_offset:\s*\).*\$/\1$vanadiel_time_offset/" conf/$f
+            sed -i "s/^\(fame_multiplier:\s*\).*\$/\1$fame_multiplier/" conf/$f
+            sed -i "s/^\(exp_retain:\s*\).*\$/\1$exp_retain/" conf/$f
+            sed -i "s/^\(exp_loss_level:\s*\).*\$/\1$exp_loss_level/" conf/$f
+            sed -i "s/^\(level_sync_enable:\s*\).*\$/\1$level_sync_enable/" conf/$f
+            sed -i "s/^\(disable_gear_scaling:\s*\).*\$/\1$disable_gear_scaling/" conf/$f
+            sed -i "s/^\(all_jobs_widescan:\s*\).*\$/\1$all_jobs_widescan/" conf/$f
+            sed -i "s/^\(speed_mod:\s*\).*\$/\1$speed_mod/" conf/$f
+            sed -i "s/^\(mob_speed_mod:\s*\).*\$/\1$mob_speed_mod/" conf/$f
             sed -i "s/^\(skillup_chance_multiplier:\s*\).*\$/\1$skillup_chance_multiplier/" conf/$f
             sed -i "s/^\(craft_chance_multiplier:\s*\).*\$/\1$craft_chance_multiplier/" conf/$f
             sed -i "s/^\(player_hp_multiplier:\s*\).*\$/\1$player_hp_multiplier/" conf/$f

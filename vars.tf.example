@@ -92,6 +92,94 @@ variable "ah_stack" {
 
 ### map_darkstar Server Configuration ###
 
+variable "lightluggage_block" {
+  default = 4
+  description = "Minimal number of 0x3A packets which uses for detect lightluggage (set 0 for disable)"
+}
+
+# AH fee structure, defaults are retail.
+variable "ah_base_fee_single" {
+  default = 1
+}
+
+variable "ah_base_fee_stacks" {
+  default = 4
+}
+
+variable "ah_tax_rate_single" {
+  default = 1.0
+}
+
+variable "ah_tax_rate_stacks" {
+  default = 0.5
+}
+
+variable "ah_max_fee" {
+  default = 10000
+}
+
+#Misc EXP related settings
+variable "exp_rate" {
+  default = 1.0
+}
+
+variable "exp_loss_rate" {
+  default = 1.0
+}
+
+variable "exp_party_gap_penalties" {
+ default = 1 
+}
+
+variable "fov_allow_alliance" {
+  default = 1
+}
+
+variable "vanadiel_time_offset" {
+  default = 0
+  description = "Determine when JP midnight is."
+}
+
+variable "fame_multiplier" {
+  default = 1.00
+  description="For old fame calculation use .25"
+}
+
+variable "exp_retain" {
+  default = 0
+  description="Percentage of experience normally lost to keep upon death. 0 means full loss, where 1 means no loss."
+}
+
+variable "exp_loss_level" {
+  default = 4
+  description="Minimum level at which experience points can be lost"
+}
+
+variable "level_sync_enable" {
+  default = 1
+  description="Enable/disable Level Sync"
+}
+
+variable "disable_gear_scaling" {
+  default = 0
+  description="Disables ability to equip higher level gear when level cap/sync effect is on player."
+}
+
+variable "all_jobs_widescan" {
+  default = 0
+  description="Enable/disable jobs other than BST and RNG having widescan"
+}
+
+variable "speed_mod" {
+  default = 0
+  description="Modifier to apply to player speed. 0 means default speed of 40, where 20 would mean speed 60 or -10 would mean speed 30."
+}
+
+variable "mob_speed_mod" {
+  default = 0
+  description="Modifier to apply to agro'd monster speed. 0 means default speed of 40, where 20 would mean speed 60 or -10 would mean speed 30."
+}
+
 variable "skillup_chance_multiplier" {
     default = 2.5
     description = "Allows you to manipulate the constant multiplier in the skill-up rate formulas, having a potent effect on skill-up rates."

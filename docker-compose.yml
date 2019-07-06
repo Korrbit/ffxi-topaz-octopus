@@ -48,6 +48,25 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       ZONE_IP: ${ZONE_IP}
       SERVERNAME: ${SERVERNAME}
+      lightluggage_block: ${lightluggage_block}
+      ah_base_fee_single: ${ah_base_fee_single}
+      ah_base_fee_stacks: ${ah_base_fee_stacks}
+      ah_tax_rate_single: ${ah_tax_rate_single}
+      ah_tax_rate_stacks: ${ah_tax_rate_stacks}
+      ah_max_fee: ${ah_max_fee}
+      exp_rate: ${exp_rate}
+      exp_loss_rate: ${exp_loss_rate}
+      exp_party_gap_penalties: ${exp_party_gap_penalties}
+      fov_allow_alliance: ${fov_allow_alliance}
+      vanadiel_time_offset: ${vanadiel_time_offset}
+      fame_multiplier: ${fame_multiplier}
+      exp_retain: ${exp_retain}
+      exp_loss_level: ${exp_loss_level}
+      level_sync_enable: ${level_sync_enable}
+      disable_gear_scaling: ${disable_gear_scaling}
+      all_jobs_widescan: ${all_jobs_widescan}
+      speed_mod: ${speed_mod}
+      mob_speed_mod: ${mob_speed_mod}
       skillup_chance_multiplier: ${skillup_chance_multiplier}
       craft_chance_multiplier: ${craft_chance_multiplier}
       player_hp_multiplier: ${player_hp_multiplier}
