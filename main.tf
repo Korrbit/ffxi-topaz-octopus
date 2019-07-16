@@ -21,7 +21,7 @@ resource "docker_container" "registry" {
 
 # Need to include a wait-for-it type of approach not only for the docker containers docker-entrypoint.sh files
 # but also for terraform such that after the registry container is built, the docker-file builds will
-# successfully upload to the registry. Currently a terrform apply needs to be run twice.
+# successfully upload to the registry. 
 
 resource "null_resource" "wait-for-it" {
     provisioner "local-exec" {
@@ -127,11 +127,16 @@ resource "docker_image" "darkstar-ahbroker" {
     }
 }
 
+# If you want to have docker volumes instead of using host volume,
+# uncomment the below and make the changes in each of the resource
+# sections
+
 # Creates a docker volume "db_data".
 #resource "docker_volume" "db_data" {
 #  name = "db_data"
 #}
 
+# Creates a docker volume "build-volume"
 #resource "docker_volume" "build-volume" {
 #  name="build-volue"
 #}

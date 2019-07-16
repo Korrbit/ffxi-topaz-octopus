@@ -32,17 +32,19 @@ all instances are based off of ubuntu:bionic, db is based off mariadb:10.4.5-bio
 ---
 
 onbuild:
-- db container shallow clones darkstar (master), copies SQL into seed directory; cleans up
-- dsbuild container installs dependencies; clones darkstar (master); compiles; cleans up
-- dsconnect
-- dsgame
-- dssearch
+- db container shallow clones darkstar (master or branch you defined), copies SQL into seed directory; cleans up
+- dsbuild container installs dependencies; clones darkstar (master or branch you defined); compiles; copies to local filepath; cleans up
+- dsconnect runs from local filepath
+- dsgame runs from local filepath
+- dssearch runs from local filepath
 
 onstart:
+- There are now many environment variables for all containers
+- dsbuild will build darkstar and uses `sed` to inject environment configuration parameters. Please see docker-compose.yml (if using docker) or main.tf (if using Terraform)
+- dsbuild will update sql tables if needed. The intent with the database saving to local file system is to allow for changes in master to reflect in sql.
 - dsconnect will update config file to provide the right ip address for msg server
 - db container copies seed data to target; prepends a `use` statement; injects a zone_ip update script
 - db container will run seed data if db defined as `$MYSQL_DATABASE` does not exist
-- app server uses `sed` to inject environment configuration parameters
 
 ---
 
@@ -81,13 +83,16 @@ admin:
 If using docker-compose:
 * `docker logs darkstar-dsgame` or similar command will get the current log from the container you are requesting.
 * `docker-compose build` will force images to rebuild. to force a pull from darkstar `master`, issue the build command with a `--no-cache` argument.
-* `docker-compose restart` will ... restart
+* `docker-compose restart` will restart
 * `docker-compose down -v` will nuke your database if you decide to forego the advice of using an external volume
 * connect to `0.0.0.0:23055` to with your (MariaDB) database tool of choice. use the credentials defined in `.env`; or the default `darkstar:darkstar`
 
 If using terraform:
 * `terraform destroy -auto-approve` will nuke the environment, including database if you decide to forego using an external volume
 * connect to `0.0.0.0:23055` to with your (MariaDB) database tool of choice. use the credentials defined in `.env`; or the default `darkstar:darkstar`
+
+For either scenerio
+* `docker logs <container name>` will show logs for the container you specify.
 
 ---
 
@@ -107,7 +112,12 @@ services are exposed on the (typical) ports:
 
 ---
 
-considerations:
-
+additional objectives:
+* add in website to manage accounts
+* incorporate Jenkins to allow for updates real time as new updates are pushed into github repo
+* design 'always on' deployment, including updates
 * integration / build testing
-* more runtime environment configuration
+* more runtime environment configuration (complete whats left)
+
+possible additions:
+* add ELK or similar stack for logging and reporting

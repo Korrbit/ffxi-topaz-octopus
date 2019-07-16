@@ -19,7 +19,7 @@ if [[ -d /opt/build/sql ]]; then
     cd /opt/build/sql
     for f in *.sql
     do
-        if [[ $f =~ ^char* ]] || [[ $f =~ ^account* ]] || [[ $f =~ ^auction_house* ]] || [[ $f =~ ^delivery_box* ]]; then
+        if [[ $f =~ ^char* ]] || [[ $f =~ ^account* ]] || [[ $f =~ ^auction_house* ]] || [[ $f =~ ^delivery_box* ]] || [[ $f=~ ^conquest_system* ]]; then
             if [[ $(mysql -h${MYSQL_HOST} -u${MYSQL_USER} -p${MYSQL_PASSWORD} ${MYSQL_DATABASE} -sse "select count(*) from ${f%????};") -gt 0 ]]; then
                 echo "${f%????} is not empty."
             else
