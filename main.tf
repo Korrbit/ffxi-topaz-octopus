@@ -312,8 +312,9 @@ resource "docker_container" "darkstar-dsconnect" {
 resource "docker_container" "darkstar-dsgame" {
   depends_on = ["null_resource.darkstar-dsbuild", "docker_container.darkstar-dsconnect", "null_resource.darkstar-dsgame"]
   image = "${docker_image.darkstar-dsgame.latest}"
-  name = "darkstar-dsgame"
-  hostname = "darkstar-dsgame"
+  count = "${length(keys(local.maps))}"
+  name = "${lookup(local.maps[element(keys(local.maps), count.index)], "name")}"
+  hostname = "${lookup(local.maps[element(keys(local.maps), count.index)], "name")}"
   volumes = {
       host_path="${var.build_volume}"
       #volume_name="${docker_volume.build-volume.name}"
@@ -322,9 +323,17 @@ resource "docker_container" "darkstar-dsgame" {
   ports = [
       {
         protocol = "udp"
-        internal = 54230
-        external = 54230
+        internal = "${lookup(local.maps[element(keys(local.maps), count.index)], "zoneport")}"
+        external = "${lookup(local.maps[element(keys(local.maps), count.index)], "zoneport")}"
       }
+  ]
+    env = [
+      "MYSQL_HOST=${docker_container.darkstar-db.name}", 
+      "MYSQL_LOGIN=${var.mysql_login}",
+      "MYSQL_DATABASE=${var.mysql_database}",
+      "MYSQL_PASSWORD=${var.mysql_password}",
+      "zoneid=${lookup(local.maps[element(keys(local.maps), count.index)], "zoneid")}",
+      "zoneport=${lookup(local.maps[element(keys(local.maps), count.index)], "zoneport")}"
   ]
   restart="always"
   network_mode="${docker_network.darkstar_network.name}"
