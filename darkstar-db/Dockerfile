@@ -22,4 +22,4 @@ RUN chmod a+x /usr/local/bin/*.sh
 ENTRYPOINT ["darkstar-db-entrypoint.sh"]
 
 EXPOSE 3306
-CMD ["mysqld"]
+CMD ["mysqld", "--max-connections=1024"]

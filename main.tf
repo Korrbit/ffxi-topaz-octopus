@@ -55,7 +55,7 @@ resource "null_resource" "darkstar-dsconnect" {
 resource "null_resource" "darkstar-dsgame" {
   depends_on = ["docker_container.registry"]
   provisioner "local-exec" {
-      command = "cd darkstar-dsgame && docker build --build-arg MYSQL_DATABASE=${var.darkstar-db} -t darkstar-dsgame:latest . && docker tag darkstar-dsgame localhost:5000/darkstar-dsgame && docker push localhost:5000/darkstar-dsgame"
+      command = "cd darkstar-dsgame && docker build --build-arg MYSQL_HOST=${var.darkstar-db} -t darkstar-dsgame:latest . && docker tag darkstar-dsgame localhost:5000/darkstar-dsgame && docker push localhost:5000/darkstar-dsgame"
   }
 }
 
