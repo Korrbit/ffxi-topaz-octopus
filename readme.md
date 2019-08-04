@@ -1,16 +1,21 @@
 # ffxi-darkstar-octopus
 
-This is based off the following works:
+---
+This branch is broken but in the works.
 
-Dockerfiles:
-* https://github.com/DarkstarProject/darkstar/tree/docker
-* https://github.com/notsureifkevin/ffxi-darkstar-docker
-* https://github.com/crahda/dockstar
+Current state:
+- single.tf will work
+- zones.tf can work with a couple of tweaks to main.tf
+- regions.tf is a work in progress
 
-Wait-for-it:
-* https://github.com/vishnubob/wait-for-it
+Design:
+- single.tf - will create a single dsgame
+- zones.tf - will create a dsgame for each zone
+- regions.tf - will create a dsgame for reach region
 
+This in intended to allow for deployment flexibility
 
+---
 Container and microservices approach for darkstar allows you to quickly setup and deploy a ffxi server.
 
 Terraform orchestrates the environments - Infrastructure As Code. (https://www.terraform.io/) You will need to install the terraform client to run terraform init, terraform plan and terraform apply.
@@ -104,3 +109,14 @@ additional objectives:
 
 possible additions:
 * add ELK or similar stack for logging and reporting
+
+---
+This project is based off the following works:
+
+Dockerfiles:
+* https://github.com/DarkstarProject/darkstar/tree/docker
+* https://github.com/notsureifkevin/ffxi-darkstar-docker
+* https://github.com/crahda/dockstar
+
+Wait-for-it:
+* https://github.com/vishnubob/wait-for-it

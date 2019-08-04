@@ -1,6 +1,6 @@
 locals {
 
-    maps = {
+    zones = {
     	zone_unkown = {
     		zoneid = 0
     		zoneport = 54230
