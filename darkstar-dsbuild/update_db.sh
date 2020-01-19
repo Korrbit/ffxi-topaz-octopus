@@ -38,3 +38,4 @@ if [[ -d /opt/build/sql ]]; then
 fi
 
 mysqlcheck -h${MYSQL_HOST} -u${MYSQL_USER} -p${MYSQL_PASSWORD} --repair ${MYSQL_DATABASE}
+python migrate.py

@@ -16,7 +16,12 @@ ARG DEPS="\
                 libmariadbclient-dev\
                 libluajit-5.1-dev\
                 libzmq3-dev\
-                mysql-client"
+                mysql-client\
+                python3\
+                python3-pip\
+                python\
+                python-pip\
+                python-mysqldb"
 
 RUN apt-get update && \
     apt-get install -y $DEPS && \
