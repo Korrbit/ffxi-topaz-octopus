@@ -1,7 +1,6 @@
 # ffxi-topaz-octopus
 
 ---
-This branch is broken but in the works.
 
 Current state:
 - single.tf will work
