@@ -1,7 +1,7 @@
 FROM ubuntu:bionic
 
 ARG FFXI_REPO 
-ENV FFIX_REPO ${FFXI_REPO:-https://github.com/DarkstarProject/darkstar.git}
+ENV FFXI_REPO ${FFXI_REPO:-https://github.com/DarkstarProject/darkstar.git}
 ARG FFXI_BRANCH
 ENV FFXI_BRANCH ${FFXI_BRANCH:-master}
 ARG VER_LOCK
@@ -19,12 +19,10 @@ ARG DEPS="\
                 mysql-client\
                 python3\
                 python3-pip\
-                python\
-                python-pip\
                 python-mysqldb"
 
 RUN apt-get update && \
-    apt-get install -y $DEPS && \
+    apt-get install -y $DEPS && pip3 install mysql-connector-python && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/build

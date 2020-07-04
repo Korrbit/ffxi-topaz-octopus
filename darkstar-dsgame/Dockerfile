@@ -9,10 +9,13 @@ ARG DEPS="\
                 libluajit-5.1\
                 libmariadbclient18\
                 libzmq5\
-                mysql-client"
+                mysql-client\
+                python3\
+                python3-pip\
+                python-mysqldb"
 
 RUN apt-get update && \
-    apt-get install -y $DEPS && \
+    apt-get install -y $DEPS && pip3 install mysql-connector-python && \
     rm -rf /var/lib/apt/lists/*
 
 COPY . /opt
