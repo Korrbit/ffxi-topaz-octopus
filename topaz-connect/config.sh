@@ -4,7 +4,7 @@ MSG_SERVER_IP=$(hostname -i)
 
 ## modify configuration
 function modConfig() {
-    local db_files=(login_darkstar.conf map_darkstar.conf search_server.conf)
+    local db_files=(login.conf map.conf search_server.conf)
 
     for f in ${db_files[@]}
     do

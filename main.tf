@@ -31,99 +31,99 @@ resource "null_resource" "wait-for-it" {
 
 # here we are providing the commands to build the docker images that will be used, and push them
 # to the local repository
-resource "null_resource" "darkstar-dsbuild" {
+resource "null_resource" "topaz-build" {
     depends_on = ["docker_container.registry"]
     provisioner "local-exec" {
-      command = "cd darkstar-dsbuild && docker build --build-arg FFXI_REPO=${var.darkstar_git_repo} --build-arg FFXI_BRANCH=${var.darkstar_branch} --build-arg VER_LOCK=${var.ver_lock} -t darkstar-dsbuild:latest . && docker tag darkstar-dsbuild localhost:5000/darkstar-dsbuild && docker push localhost:5000/darkstar-dsbuild"
+      command = "cd topaz-build && docker build --build-arg FFXI_REPO=${var.topaz_git_repo} --build-arg FFXI_BRANCH=${var.topaz_branch} --build-arg VER_LOCK=${var.ver_lock} -t topaz-build:latest . && docker tag topaz-build localhost:5000/topaz-build && docker push localhost:5000/topaz-build"
     }
 }
 
-resource "null_resource" "darkstar-db" {
+resource "null_resource" "topaz-db" {
   depends_on = ["docker_container.registry"]
     provisioner "local-exec" {
-      command = "cd darkstar-db && docker build --build-arg FFXI_REPO=${var.darkstar_git_repo} --build-arg FFXI_BRANCH=${var.darkstar_branch} --build-arg MYSQL_DATABASE=${var.darkstar-db} -t darkstar-db:latest . && docker tag darkstar-db localhost:5000/darkstar-db && docker push localhost:5000/darkstar-db"
+      command = "cd topaz-db && docker build --build-arg FFXI_REPO=${var.topaz_git_repo} --build-arg FFXI_BRANCH=${var.topaz_branch} --build-arg MYSQL_DATABASE=${var.topaz-db} -t topaz-db:latest . && docker tag topaz-db localhost:5000/topaz-db && docker push localhost:5000/topaz-db"
     }
 }
 
-resource "null_resource" "darkstar-dsconnect" {
+resource "null_resource" "topaz-connect" {
   depends_on = ["docker_container.registry"]
   provisioner "local-exec" {
-      command = "cd darkstar-dsconnect && docker build --build-arg MYSQL_DATABASE=${var.darkstar-db} -t darkstar-dsconnect:latest . && docker tag darkstar-dsconnect localhost:5000/darkstar-dsconnect && docker push localhost:5000/darkstar-dsconnect"
+      command = "cd topaz-connect && docker build --build-arg MYSQL_DATABASE=${var.topaz-db} -t topaz-connect:latest . && docker tag topaz-connect localhost:5000/topaz-connect && docker push localhost:5000/topaz-connect"
   }
 }
 
-resource "null_resource" "darkstar-dsgame" {
+resource "null_resource" "topaz-game" {
   depends_on = ["docker_container.registry"]
   provisioner "local-exec" {
-      command = "cd darkstar-dsgame && docker build --build-arg MYSQL_DATABASE=${var.darkstar-db} -t darkstar-dsgame:latest . && docker tag darkstar-dsgame localhost:5000/darkstar-dsgame && docker push localhost:5000/darkstar-dsgame"
+      command = "cd topaz-game && docker build --build-arg MYSQL_HOST=${var.topaz-db} -t topaz-game:latest . && docker tag topaz-game localhost:5000/topaz-game && docker push localhost:5000/topaz-game"
   }
 }
 
-resource "null_resource" "darkstar-dssearch" {
+resource "null_resource" "topaz-search" {
 depends_on = ["docker_container.registry"]
   provisioner "local-exec" {
-      command = "cd darkstar-dssearch && docker build --build-arg MYSQL_DATABASE=${var.darkstar-db} -t darkstar-dssearch:latest . && docker tag darkstar-dssearch localhost:5000/darkstar-dssearch && docker push localhost:5000/darkstar-dssearch"
+      command = "cd topaz-search && docker build --build-arg MYSQL_DATABASE=${var.topaz-db} -t topaz-search:latest . && docker tag topaz-search localhost:5000/topaz-search && docker push localhost:5000/topaz-search"
   }
 }
 
-resource "null_resource" "darkstar-ahbroker" {
+resource "null_resource" "topaz-ahbroker" {
   depends_on = ["docker_container.registry"]
   provisioner "local-exec" {
-    command = "cd darkstar-ahbroker && docker build --build-arg MYSQL_HOST=${var.darkstar-db} --build-arg GITHUB_REPO=${var.github_repo_ahbroker} --build-arg GITHUB_BRANCH=${var.github_branch_ahbroker} -t darkstar-ahbroker:latest . && docker tag darkstar-ahbroker localhost:5000/darkstar-ahbroker && docker push localhost:5000/darkstar-ahbroker"
+    command = "cd topaz-ahbroker && docker build --build-arg MYSQL_HOST=${var.topaz-db} --build-arg GITHUB_REPO=${var.github_repo_ahbroker} --build-arg GITHUB_BRANCH=${var.github_branch_ahbroker} -t topaz-ahbroker:latest . && docker tag topaz-ahbroker localhost:5000/topaz-ahbroker && docker push localhost:5000/topaz-ahbroker"
   }
 }
 
-resource "docker_image" "darkstar-db" {
-  depends_on = ["null_resource.darkstar-db"]
-  name = "localhost:5000/darkstar-db:latest"
+resource "docker_image" "topaz-db" {
+  depends_on = ["null_resource.topaz-db"]
+  name = "localhost:5000/topaz-db:latest"
   provisioner "local-exec" {
       when    = "destroy"
-      command = "docker rmi -f $(docker images -q darkstar-db)"
+      command = "docker rmi -f $(docker images -q topaz-db)"
     }
 }
 
-resource "docker_image" "darkstar-dsbuild" {
-  depends_on = ["null_resource.darkstar-dsbuild"]
-  name = "localhost:5000/darkstar-dsbuild:latest"
+resource "docker_image" "topaz-build" {
+  depends_on = ["null_resource.topaz-build"]
+  name = "localhost:5000/topaz-build:latest"
   provisioner "local-exec" {
       when    = "destroy"
-      command = "docker rmi -f $(docker images -q darkstar-dsbuild)"
+      command = "docker rmi -f $(docker images -q topaz-build)"
     }
 }
 
-resource "docker_image" "darkstar-dsconnect" {
-  depends_on = ["null_resource.darkstar-dsconnect"]
-  name = "localhost:5000/darkstar-dsconnect:latest"
+resource "docker_image" "topaz-connect" {
+  depends_on = ["null_resource.topaz-connect"]
+  name = "localhost:5000/topaz-connect:latest"
   provisioner "local-exec" {
       when    = "destroy"
-      command = "docker rmi -f $(docker images -q darkstar-dsconnect)"
+      command = "docker rmi -f $(docker images -q topaz-connect)"
     }
 }
 
-resource "docker_image" "darkstar-dsgame" {
-  depends_on = ["null_resource.darkstar-dsgame"]
-  name = "localhost:5000/darkstar-dsgame:latest"
+resource "docker_image" "topaz-game" {
+  depends_on = ["null_resource.topaz-game"]
+  name = "localhost:5000/topaz-game:latest"
   provisioner "local-exec" {
       when    = "destroy"
-      command = "docker rmi -f $(docker images -q darkstar-dsgame)"
+      command = "docker rmi -f $(docker images -q topaz-game)"
     }
 }
 
-resource "docker_image" "darkstar-dssearch" {
-  depends_on = ["null_resource.darkstar-dssearch"]
-  name = "localhost:5000/darkstar-dssearch:latest"
+resource "docker_image" "topaz-search" {
+  depends_on = ["null_resource.topaz-search"]
+  name = "localhost:5000/topaz-search:latest"
   provisioner "local-exec" {
       when    = "destroy"
-      command = "docker rmi -f $(docker images -q darkstar-dssearch)"
+      command = "docker rmi -f $(docker images -q topaz-search)"
     }
 }
 
-resource "docker_image" "darkstar-ahbroker" {
-  depends_on = ["null_resource.darkstar-ahbroker"]
-  name = "localhost:5000/darkstar-ahbroker:latest"
+resource "docker_image" "topaz-ahbroker" {
+  depends_on = ["null_resource.topaz-ahbroker"]
+  name = "localhost:5000/topaz-ahbroker:latest"
   provisioner "local-exec" {
       when    = "destroy"
-      command = "docker rmi -f $(docker images -q darkstar-ahbroker)"
+      command = "docker rmi -f $(docker images -q topaz-ahbroker)"
     }
 }
 
@@ -143,16 +143,16 @@ resource "docker_image" "darkstar-ahbroker" {
 
 
 # Create a new docker network
-resource "docker_network" "darkstar_network" {
-  name = "ffxi_darkstar"
+resource "docker_network" "topaz_network" {
+  name = "ffxi_topaz"
 }
 
 # Create containers for db, ahbroker and server
-resource "docker_container" "darkstar-db" {
-  depends_on = ["null_resource.darkstar-db"]
-  image = "${docker_image.darkstar-db.latest}"
-  name  = "${var.darkstar-db}"
-  hostname = "${var.darkstar-db}"
+resource "docker_container" "topaz-db" {
+  depends_on = ["null_resource.topaz-db"]
+  image = "${docker_image.topaz-db.latest}"
+  name  = "${var.topaz-db}"
+  hostname = "${var.topaz-db}"
   volumes = {
       host_path="${var.db_volume}"
       #volume_name="${docker_volume.db_data.name}"
@@ -171,16 +171,16 @@ resource "docker_container" "darkstar-db" {
         external = 23055
       }
   restart="always"
-  network_mode="${docker_network.darkstar_network.name}"
+  network_mode="${docker_network.topaz_network.name}"
 }
 
-resource "docker_container" "darkstar-ahbroker" {
-  depends_on = ["null_resource.darkstar-dsbuild", "docker_container.darkstar-db", "null_resource.darkstar-ahbroker"]
-  image = "${docker_image.darkstar-ahbroker.latest}"
-  name = "darkstar-ahbroker"
-  hostname = "darkstar-ahbroker"
+resource "docker_container" "topaz-ahbroker" {
+  depends_on = ["null_resource.topaz-build", "docker_container.topaz-db", "null_resource.topaz-ahbroker"]
+  image = "${docker_image.topaz-ahbroker.latest}"
+  name = "topaz-ahbroker"
+  hostname = "topaz-ahbroker"
   env = [
-    "MYSQL_HOST=${docker_container.darkstar-db.name}", 
+    "MYSQL_HOST=${docker_container.topaz-db.name}", 
     "MYSQL_USER=${var.mysql_login}", 
     "MYSQL_DATABASE=${var.mysql_database}", 
     "MYSQL_PASSWORD=${var.mysql_password}",
@@ -190,21 +190,21 @@ resource "docker_container" "darkstar-ahbroker" {
     "AH_STACK=${var.ah_stack}"
   ]
   restart="always"
-  network_mode="${docker_network.darkstar_network.name}"
+  network_mode="${docker_network.topaz_network.name}"
 }
 
-resource "docker_container" "darkstar-dsbuild" {
-  depends_on = ["null_resource.darkstar-dsbuild"]
-  image = "${docker_image.darkstar-dsbuild.latest}"
-  name  = "darkstar-dsbuild"
-  hostname = "darkstar-dsbuild"
+resource "docker_container" "topaz-build" {
+  depends_on = ["null_resource.topaz-build"]
+  image = "${docker_image.topaz-build.latest}"
+  name  = "topaz-build"
+  hostname = "topaz-build"
     volumes = {
       host_path="${var.build_volume}"
       #volume_name="${docker_volume.build-volume.name}"
       container_path="/usr/build"
   }
   env = [ 
-      "MYSQL_HOST=${docker_container.darkstar-db.name}", 
+      "MYSQL_HOST=${docker_container.topaz-db.name}", 
       "MYSQL_LOGIN=${var.mysql_login}",
       "MYSQL_DATABASE=${var.mysql_database}",
       "MYSQL_PASSWORD=${var.mysql_password}",
@@ -278,14 +278,14 @@ resource "docker_container" "darkstar-dsbuild" {
       "VISITANT_BONUS=${var.visitant_bonus}"
       ]
 
-  network_mode="${docker_network.darkstar_network.name}"
+  network_mode="${docker_network.topaz_network.name}"
 }
 
-resource "docker_container" "darkstar-dsconnect" {
-  depends_on = ["null_resource.darkstar-dsbuild", "docker_container.darkstar-dsbuild", "null_resource.darkstar-dsconnect"]
-  image = "${docker_image.darkstar-dsconnect.latest}"
-  name = "darkstar-dsconnect"
-  hostname = "darkstar-dsconnect"
+resource "docker_container" "topaz-connect" {
+  depends_on = ["null_resource.topaz-build", "docker_container.topaz-build", "null_resource.topaz-connect"]
+  image = "${docker_image.topaz-connect.latest}"
+  name = "topaz-connect"
+  hostname = "topaz-connect"
   volumes = {
       host_path="${var.build_volume}"
       #volume_name="${docker_volume.build-volume.name}"
@@ -306,14 +306,16 @@ resource "docker_container" "darkstar-dsconnect" {
       }
   ]
   restart="always"
-  network_mode="${docker_network.darkstar_network.name}"
+  network_mode="${docker_network.topaz_network.name}"
 }
 
-resource "docker_container" "darkstar-dsgame" {
-  depends_on = ["null_resource.darkstar-dsbuild", "docker_container.darkstar-dsconnect", "null_resource.darkstar-dsgame"]
-  image = "${docker_image.darkstar-dsgame.latest}"
-  name = "darkstar-dsgame"
-  hostname = "darkstar-dsgame"
+resource "docker_container" "topaz-game" {
+  depends_on = ["null_resource.topaz-build", "docker_container.topaz-connect", "null_resource.topaz-game"]
+  image = "${docker_image.topaz-game.latest}"
+  count = "${length(keys(local.single))}"
+  name = "${lookup(local.single[element(keys(local.single), count.index)], "name")}"
+  hostname = "${lookup(local.single[element(keys(local.single), count.index)], "name")}"
+  #memory = 25
   volumes = {
       host_path="${var.build_volume}"
       #volume_name="${docker_volume.build-volume.name}"
@@ -322,19 +324,27 @@ resource "docker_container" "darkstar-dsgame" {
   ports = [
       {
         protocol = "udp"
-        internal = 54230
-        external = 54230
+        internal = "${lookup(local.single[element(keys(local.single), count.index)], "zoneport")}"
+        external = "${lookup(local.single[element(keys(local.single), count.index)], "zoneport")}"
       }
   ]
+    env = [
+      "MYSQL_HOST=${docker_container.topaz-db.name}", 
+      "MYSQL_LOGIN=${var.mysql_login}",
+      "MYSQL_DATABASE=${var.mysql_database}",
+      "MYSQL_PASSWORD=${var.mysql_password}",
+      "zoneids=${lookup(local.single[element(keys(local.single), count.index)], "zoneids")}",
+      "zoneport=${lookup(local.single[element(keys(local.single), count.index)], "zoneport")}"
+  ]
   restart="always"
-  network_mode="${docker_network.darkstar_network.name}"
+  network_mode="${docker_network.topaz_network.name}"
 }
 
-resource "docker_container" "darkstar-dssearch" {
-  depends_on = ["null_resource.darkstar-dsbuild", "docker_container.darkstar-dsconnect", "null_resource.darkstar-dssearch"]
-  image = "${docker_image.darkstar-dssearch.latest}"
-  name = "darkstar-dssearch"
-  hostname = "darkstar-dssearch"
+resource "docker_container" "topaz-search" {
+  depends_on = ["null_resource.topaz-build", "docker_container.topaz-connect", "null_resource.topaz-search"]
+  image = "${docker_image.topaz-search.latest}"
+  name = "topaz-search"
+  hostname = "topaz-search"
   volumes = {
       host_path="${var.build_volume}"
       #volume_name="${docker_volume.build-volume.name}"
@@ -347,5 +357,5 @@ resource "docker_container" "darkstar-dssearch" {
       }
   ]
   restart="always"
-  network_mode="${docker_network.darkstar_network.name}"
+  network_mode="${docker_network.topaz_network.name}"
 }
