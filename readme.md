@@ -16,7 +16,7 @@ Design:
 This in intended to allow for deployment flexibility
 
 ---
-Container and microservices approach for topaz allows you to quickly setup and deploy a ffxi server.
+Container and microservices approach for Topaz allows you to quickly setup and deploy a ffxi server.
 
 Terraform orchestrates the environments - Infrastructure As Code. (https://www.terraform.io/) You will need to install the terraform client to run terraform init, terraform plan and terraform apply.
 
@@ -30,7 +30,7 @@ Terraform orchestrates the environments - Infrastructure As Code. (https://www.t
 Microservices approach sets up multiple map containers (one for each map)
 seperate services (game, connect, search and db); utilizes docker volume to persist db data as well as build data;
 
-all instances are based off of ubuntu:bionic, db is based off mariadb:10.4.5-bionic
+all instances are based off of ubuntu:focal, db is based off mariadb:focal
 
 ---
 

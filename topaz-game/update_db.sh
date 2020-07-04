@@ -1,10 +1,10 @@
 #!/bin/bash
 
-MYSQL_USER=${MYSQL_USER:-darkstar}
-MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-darkstar}
-MYSQL_PASSWORD=${MYSQL_PASSWORD:-darkstar}
-MYSQL_DATABASE=${MYSQL_DATABASE:-dspdb}
-MYSQL_HOST=${MYSQL_HOST:-darkstar-db}
+MYSQL_USER=${MYSQL_USER:-topaz}
+MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-topaz}
+MYSQL_PASSWORD=${MYSQL_PASSWORD:-topaz}
+MYSQL_DATABASE=${MYSQL_DATABASE:-tpzdb}
+MYSQL_HOST=${MYSQL_HOST:-topaz-db}
 zoneport=${zoneport}
 zoneid=${zoneid}
 zoneids=${zoneids}

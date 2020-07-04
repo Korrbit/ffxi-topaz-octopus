@@ -7,10 +7,12 @@ ENV GITHUB_REPO ${GITHUB_REPO:-https://github.com/AdamGagorik/pydarkstar.git}
 ARG GITHUB_BRANCH
 ENV GITHUB_BRANCH ${GITHUB_BRANCH:-master}
 
+# python-pip
+#  pip install supervisor supervisor-stdout && \
+
 RUN apt-get update && \
-  apt-get install -y  git python3 python3-pip python python-pip && \
+  apt-get install -y  git python3 python3-pip python  && \
   pip3 install sqlalchemy pymysql beautifulsoup4 pyyaml six && \
-  pip install supervisor supervisor-stdout && \
   git clone -b ${GITHUB_BRANCH} ${GITHUB_REPO} /topaz && \
   cd /topaz && \
   rm -rf /var/lib/apt/lists/*
