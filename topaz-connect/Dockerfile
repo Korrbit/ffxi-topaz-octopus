@@ -1,4 +1,5 @@
-FROM ubuntu:bionic
+#ubuntu:focal - 20.04
+FROM ubuntu:focal
 
 ARG MYSQL_DATABASE
 ENV MYSQL_DATABASE ${MYSQL_DATABASE:-darkstar-db}

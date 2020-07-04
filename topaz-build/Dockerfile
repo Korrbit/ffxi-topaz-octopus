@@ -1,9 +1,10 @@
-FROM ubuntu:bionic
+#ubuntu:focal - 20.04
+FROM ubuntu:focal
 
 ARG FFXI_REPO 
-ENV FFXI_REPO ${FFXI_REPO:-https://github.com/DarkstarProject/darkstar.git}
+ENV FFXI_REPO ${FFXI_REPO:-https://github.com/project-topaz/topaz.git}
 ARG FFXI_BRANCH
-ENV FFXI_BRANCH ${FFXI_BRANCH:-master}
+ENV FFXI_BRANCH ${FFXI_BRANCH:-release}
 ARG VER_LOCK
 ENV VER_LOCK ${VER_LOCK:-1}
 

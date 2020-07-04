@@ -1,4 +1,4 @@
 #!/bin/bash
 zoneport=${zoneport}
 
-./dsgame --port ${zoneport}
+./game --port ${zoneport}

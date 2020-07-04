@@ -1,7 +1,8 @@
-FROM ubuntu:bionic
+#ubuntu:focal - 20.04
+FROM ubuntu:focal
 
 ARG MYSQL_DATABASE
-ENV MYSQL_DATABASE ${MYSQL_DATABASE:-darkstar-db}
+ENV MYSQL_DATABASE ${MYSQL_DATABASE:-topaz-db}
 
 ARG DEPS="\
                 libmariadbclient18\
@@ -15,4 +16,4 @@ WORKDIR /usr/build
 
 EXPOSE 54002
 
-CMD ./wait-for-it.sh ${MYSQL_DATABASE}:3306 --timeout=0 && ./dssearch
+CMD ./wait-for-it.sh ${MYSQL_DATABASE}:3306 --timeout=0 && ./search

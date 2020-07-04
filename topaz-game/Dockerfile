@@ -1,7 +1,7 @@
-FROM ubuntu:bionic
+FROM ubuntu:focal
 
 ARG MYSQL_HOST
-ENV MYSQL_HOST ${MYSQL_HOST:-darkstar-db}
+ENV MYSQL_HOST ${MYSQL_HOST:-topaz-db}
 ARG zoneport
 ENV zoneport ${zoneport:-54230}
 
@@ -20,10 +20,10 @@ RUN apt-get update && \
 
 COPY . /opt
 RUN chmod a+x /opt/update_db.sh && \
-    chmod a+x /opt/run_dsgame.sh
+    chmod a+x /opt/run_game.sh
 
 WORKDIR /usr/build
 
 #EXPOSE ${zoneport}
 
-CMD ./wait-for-it.sh ${MYSQL_HOST}:3306 --timeout=0 && /opt/update_db.sh && /opt/run_dsgame.sh
+CMD ./wait-for-it.sh ${MYSQL_HOST}:3306 --timeout=0 && /opt/update_db.sh && /opt/run_game.sh
