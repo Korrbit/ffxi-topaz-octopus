@@ -8,19 +8,24 @@ ENV FFXI_BRANCH ${FFXI_BRANCH:-release}
 ARG VER_LOCK
 ENV VER_LOCK ${VER_LOCK:-1}
 
+ENV DEBIAN_FRONTEND=noninteractive
+
+#                libmariadbclient-dev\
+
 ARG DEPS="\
                 git\
                 autoconf\
                 automake\
                 pkg-config\
                 g++-7\
-                libmariadbclient-dev\
+                libmysqlclient-dev\
                 libluajit-5.1-dev\
                 libzmq3-dev\
                 mysql-client\
+                libmysqlclient21\
                 python3\
                 python3-pip\
-                python-mysqldb"
+                python3-mysqldb"
 
 RUN apt-get update && \
     apt-get install -y $DEPS && pip3 install mysql-connector-python && \
@@ -33,7 +38,7 @@ RUN ./autogen.sh
 RUN ./configure
 RUN make -j6
 COPY . .
-RUN sed -i "s/^\(VER_LOCK:\s*\).*\$/\1${VER_LOCK}/" version.info && \
+RUN sed -i "s/^\(VER_LOCK:\s*\).*\$/\1${VER_LOCK}/" conf/default/version.conf && \
     chmod a+x config.sh && \
     chmod a+x wait-for-it.sh && \
     chmod a+x update_db.sh

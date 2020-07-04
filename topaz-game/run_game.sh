@@ -1,4 +1,4 @@
 #!/bin/bash
 zoneport=${zoneport}
 
-./game --port ${zoneport}
+./topaz_game --port ${zoneport}

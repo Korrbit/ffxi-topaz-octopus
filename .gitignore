@@ -1,8 +1,10 @@
 .env
 terraform.*
+.terraform*
 lock.*
 terraform-*
 vars.tf
 darkstar-server/
 db/
 build/
+.terraform/

@@ -7,12 +7,12 @@ ENV zoneport ${zoneport:-54230}
 
 ARG DEPS="\
                 libluajit-5.1\
-                libmariadbclient18\
-                libzmq5\
                 mysql-client\
+                libzmq5\
+                libmysqlclient21\
                 python3\
                 python3-pip\
-                python-mysqldb"
+                python3-mysqldb"
 
 RUN apt-get update && \
     apt-get install -y $DEPS && pip3 install mysql-connector-python && \
