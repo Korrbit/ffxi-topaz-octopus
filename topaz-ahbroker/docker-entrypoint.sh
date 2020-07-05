@@ -32,4 +32,4 @@ function modConfig() {
 
 modConfig
 
-exec /usr/local/bin/supervisord
+exec /usr/bin/supervisord
