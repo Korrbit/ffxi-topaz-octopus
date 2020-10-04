@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y git && \
 
 RUN git clone --depth=1 -b ${FFXI_BRANCH} ${FFXI_REPO} /topaz && \
   mkdir -p /docker-entrypoint-initdb.d/.seed && \
-  cp /topaz/sql/* /docker-entrypoint-initdb.d/.seed/ && \
+  cp -r /topaz/sql/* /docker-entrypoint-initdb.d/.seed/ && \
   rm -rf /topaz
 
 COPY topaz-db-entrypoint.sh /usr/local/bin
